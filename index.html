@@ -202,6 +202,35 @@
   footer { padding: 48px 0 40px; color: var(--text-3); font-size: 13px; }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
   footer a { color: var(--text-2); }
+
+  /* A macOS-style "While you were away" notification, shown once on first scroll. */
+  .notif { position: fixed; top: 64px; right: 16px; z-index: 20; width: 344px; max-width: calc(100vw - 32px);
+           display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 10px; align-items: center;
+           padding: 12px 14px; border-radius: 18px; cursor: pointer; text-align: left;
+           font: inherit; color: var(--text); border: 0;
+           background: color-mix(in srgb, var(--surface) 82%, transparent);
+           backdrop-filter: saturate(180%) blur(24px); -webkit-backdrop-filter: saturate(180%) blur(24px);
+           box-shadow: var(--shadow);
+           transform: translateX(calc(100% + 32px)); opacity: 0; visibility: hidden;
+           transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.1), opacity 0.3s, visibility 0s 0.5s; }
+  .notif.show { transform: none; opacity: 1; visibility: visible;
+                transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.1), opacity 0.3s, visibility 0s; }
+  .notif .app { width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center; color: #fff;
+                background: linear-gradient(160deg, #3d9bff, #0063d6); box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.25); }
+  .notif .app .ico { font-size: 20px; }
+  .notif .top { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2); }
+  .notif b { display: block; font-size: 13.5px; margin-top: 1px; }
+  .notif .body { font-size: 13px; color: var(--text-2); }
+  .notif .close { position: absolute; top: -6px; left: -6px; width: 20px; height: 20px; border-radius: 50%; border: 0;
+                  display: grid; place-items: center; padding: 0; cursor: pointer; color: var(--text-2);
+                  background: var(--surface); box-shadow: 0 0 0 0.5px var(--line), 0 1px 3px rgba(0,0,0,0.2);
+                  opacity: 0; transition: opacity 0.15s; font-size: 14px; line-height: 1; }
+  .notif:hover .close, .notif:focus-within .close { opacity: 1; }
+  @media (max-width: 640px) { .notif { top: 60px; right: 12px; max-width: calc(100vw - 24px); } }
+  @media (prefers-reduced-motion: reduce) { .notif, .notif.show { transition: opacity 0.2s, visibility 0s; transform: none; } }
+
+  .feature.flash { animation: flash 1.6s ease-out; }
+  @keyframes flash { 0%, 40% { box-shadow: 0 0 0 3px var(--pink); } 100% { box-shadow: 0 0 0 1px var(--line); } }
 </style>
 </head>
 <body>
@@ -344,7 +373,7 @@
         <h3>A badge that means something</h3>
         <p>The menu bar counts your review requests and your PRs that need action. The icon turns red when something of yours is blocked.</p>
       </div>
-      <div class="feature" style="--t:var(--pink)">
+      <div class="feature" id="away" style="--t:var(--pink)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span>
         <h3>While you were away</h3>
         <p>Lock your Mac for lunch. When you come back, PRzzz shows what changed in a section of its own for the next ten minutes.</p>
@@ -398,6 +427,49 @@
     <span>Icons: <a href="https://www.flaticon.com/uicons">UIcons by Flaticon</a></span>
   </div>
 </footer>
+
+<div class="notif" id="notif" role="status" aria-live="polite" tabindex="-1">
+  <button class="close" type="button" aria-label="Dismiss notification">×</button>
+  <span class="app"><i class="ico" style="--src:url(assets/pull-request.svg)"></i></span>
+  <div>
+    <div class="top"><span>PRzzz</span><span>now</span></div>
+    <b>While you were away</b>
+    <div class="body">Changes in 3 repos</div>
+  </div>
+</div>
+
+<script>
+  // Once per visit, when the reader scrolls past the hero, slide in the notification
+  // PRzzz posts after you unlock your Mac. Clicking it shows the feature it comes from.
+  (function () {
+    const notif = document.getElementById('notif');
+    const target = document.getElementById('buckets');
+    if (!notif || !target || !('IntersectionObserver' in window)) return;
+
+    let hideTimer;
+    const hide = () => { clearTimeout(hideTimer); notif.classList.remove('show'); };
+    const scheduleHide = () => { clearTimeout(hideTimer); hideTimer = setTimeout(hide, 7000); };
+
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      observer.disconnect();
+      setTimeout(() => { notif.classList.add('show'); scheduleHide(); }, 500);
+    }, { rootMargin: '0px 0px -40% 0px' });
+    observer.observe(target);
+
+    notif.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+    notif.addEventListener('mouseleave', scheduleHide);
+    notif.querySelector('.close').addEventListener('click', (e) => { e.stopPropagation(); hide(); });
+    notif.addEventListener('click', () => {
+      hide();
+      const card = document.getElementById('away');
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.classList.remove('flash');
+      void card.offsetWidth;
+      card.classList.add('flash');
+    });
+  })();
+</script>
 
 </body>
 </html>
