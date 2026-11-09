@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRzzz — pull requests in your menu bar</title>
+<meta name="description" content="PRzzz is a Mac menu bar app that sorts your GitHub pull requests into what needs you, what's waiting, and what's done.">
+<link rel="icon" href="assets/pull-request.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: #f6f6f8;
+    --surface: #ffffff;
+    --surface-2: #f0f0f3;
+    --text: #1d1d1f;
+    --text-2: #5f5f66;
+    --text-3: #8e8e93;
+    --line: rgba(0, 0, 0, 0.08);
+    --accent: #007aff;
+    --accent-text: #ffffff;
+    --desk-1: #c9d6ff;
+    --desk-2: #e2e2f6;
+    --menubar: rgba(255, 255, 255, 0.55);
+    --shadow: 0 30px 60px -20px rgba(20, 20, 40, 0.35), 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+
+    --blue: #007aff;   --red: #ff3b30;    --orange: #ff9500; --green: #28cd41;
+    --teal: #30b0c7;   --yellow: #b38f00; --indigo: #5856d6; --gray: #8e8e93;
+    --mint: #00a39c;   --purple: #af52de; --pink: #ff2d55;   --brown: #a2845e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111113;
+      --surface: #1e1e21;
+      --surface-2: #28282c;
+      --text: #f5f5f7;
+      --text-2: #a1a1a8;
+      --text-3: #6e6e75;
+      --line: rgba(255, 255, 255, 0.09);
+      --accent: #0a84ff;
+      --desk-1: #23264a;
+      --desk-2: #3a2440;
+      --menubar: rgba(30, 30, 34, 0.55);
+      --shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+
+      --blue: #0a84ff;   --red: #ff453a;    --orange: #ff9f0a; --green: #32d74b;
+      --teal: #40c8e0;   --yellow: #ffd60a; --indigo: #5e5ce6; --gray: #98989d;
+      --mint: #63e6e2;   --purple: #bf5af2; --pink: #ff375f;   --brown: #ac8e68;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111113; --surface: #1e1e21; --surface-2: #28282c; --text: #f5f5f7;
+    --text-2: #a1a1a8; --text-3: #6e6e75; --line: rgba(255, 255, 255, 0.09);
+    --accent: #0a84ff; --desk-1: #23264a; --desk-2: #3a2440; --menubar: rgba(30, 30, 34, 0.55);
+    --shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+    --blue: #0a84ff; --red: #ff453a; --orange: #ff9f0a; --green: #32d74b; --teal: #40c8e0;
+    --yellow: #ffd60a; --indigo: #5e5ce6; --gray: #98989d; --mint: #63e6e2; --purple: #bf5af2;
+    --pink: #ff375f; --brown: #ac8e68;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+  /* Icons: the app's own Flaticon UIcons, tinted with currentColor. */
+  .ico {
+    display: inline-block; flex: none;
+    width: 1em; height: 1em;
+    background: currentColor;
+    -webkit-mask: var(--src) center / contain no-repeat;
+            mask: var(--src) center / contain no-repeat;
+  }
+
+  /* Nav */
+  nav { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(180%) blur(16px);
+        -webkit-backdrop-filter: saturate(180%) blur(16px);
+        background: color-mix(in srgb, var(--bg) 75%, transparent); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; gap: 24px; height: 52px; }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); font-size: 17px; }
+  .brand:hover { text-decoration: none; }
+  .brand .ico { font-size: 18px; }
+  nav .links { display: flex; gap: 20px; margin-left: auto; font-size: 14px; }
+  nav .links a { color: var(--text-2); }
+  nav .links a:hover { color: var(--text); text-decoration: none; }
+  @media (max-width: 640px) { nav .links a:not(.btn) { display: none; } }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px;
+         background: var(--accent); color: var(--accent-text) !important; font-weight: 600; font-size: 15px; }
+  .btn:hover { text-decoration: none; filter: brightness(1.08); }
+  .btn.small { padding: 6px 14px; font-size: 13px; }
+  .btn.ghost { background: transparent; color: var(--text) !important; box-shadow: inset 0 0 0 1px var(--line); }
+
+  /* Hero */
+  .hero { padding: 72px 0 40px; text-align: center; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
+             color: var(--text-2); background: var(--surface); box-shadow: 0 0 0 1px var(--line);
+             padding: 4px 12px; border-radius: 999px; }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  h1 { font-size: clamp(36px, 6vw, 64px); line-height: 1.05; letter-spacing: -0.03em; margin: 20px auto 16px; max-width: 14ch; }
+  .lede { font-size: clamp(17px, 2.2vw, 20px); color: var(--text-2); max-width: 36em; margin: 0 auto 28px; }
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .fine { font-size: 13px; color: var(--text-3); margin-top: 14px; }
+
+  /* Desktop + menu mock */
+  .desk { margin: 48px auto 0; max-width: 920px; border-radius: 18px; overflow: hidden; position: relative;
+          background: radial-gradient(120% 90% at 20% 0%, var(--desk-1), transparent 60%),
+                      radial-gradient(120% 90% at 100% 100%, var(--desk-2), transparent 60%), var(--surface-2);
+          box-shadow: 0 0 0 1px var(--line); text-align: left; }
+  .menubar { height: 28px; display: flex; align-items: center; justify-content: flex-end; gap: 18px; padding: 0 14px;
+             background: var(--menubar); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+             font-size: 13px; font-weight: 500; }
+  .menubar .item { display: flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 5px; }
+  .menubar .item.on { background: color-mix(in srgb, var(--text) 14%, transparent); }
+  .menubar .item .ico { font-size: 14px; color: var(--red); }
+  .menubar .faint { color: var(--text-2); }
+  .stage { display: flex; justify-content: flex-end; padding: 6px 24px 40px; }
+  @media (max-width: 640px) { .stage { padding: 6px 8px 24px; justify-content: center; } .menubar .faint { display: none; } }
+
+  .menu { width: 400px; max-width: 100%; background: var(--surface); border-radius: 12px; box-shadow: var(--shadow);
+          overflow: hidden; font-size: 13px; line-height: 1.3; }
+  .m-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .m-head b { font-size: 14px; }
+  .m-head .login { color: var(--text-3); }
+  .m-head .tools { margin-left: auto; display: flex; gap: 12px; color: var(--text-2); }
+  .m-head .tools .ico { font-size: 14px; }
+  .m-body { max-height: 545px; overflow: hidden; position: relative; }
+  .m-body::after { content: ""; position: absolute; inset: auto 0 0; height: 48px;
+                   background: linear-gradient(transparent, var(--surface)); pointer-events: none; }
+  .sec { display: flex; align-items: center; gap: 7px; padding: 8px 12px 6px; font-weight: 600; color: var(--t);
+         background: color-mix(in srgb, var(--surface-2) 70%, var(--surface)); border-bottom: 1px solid var(--line); }
+  .sec .ico { font-size: 13px; }
+  .pill { margin-left: auto; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px;
+          background: color-mix(in srgb, var(--t) 18%, transparent); color: var(--t); }
+  .row { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 12px 8px 14px;
+         position: relative; border-bottom: 1px solid var(--line); }
+  .row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--t); }
+  .av { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700;
+        color: #fff; background: var(--c); }
+  .row .title { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .meta { color: var(--text-3); font-size: 11.5px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .side { text-align: right; font-size: 11px; color: var(--text-3); display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+  .status { font-weight: 600; color: var(--s); white-space: nowrap; }
+  .counts { display: flex; gap: 8px; align-items: center; }
+  .counts span { display: inline-flex; gap: 3px; align-items: center; }
+  .counts .ico { font-size: 10px; }
+  .ci { grid-column: 2 / 4; margin-top: 2px; font-size: 11px; color: var(--text-3); }
+  .bar { height: 4px; border-radius: 2px; background: var(--surface-2); overflow: hidden; margin-bottom: 4px; }
+  .bar i { display: block; height: 100%; width: 43%; background: var(--accent); border-radius: 2px;
+           animation: grow 6s ease-in-out infinite alternate; }
+  @keyframes grow { from { width: 38% } to { width: 62% } }
+  @media (prefers-reduced-motion: reduce) { .bar i { animation: none; } }
+  .m-foot { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-top: 1px solid var(--line); color: var(--text-3); font-size: 12px; }
+  .m-foot .ico { font-size: 12px; color: var(--text-2); }
+  .m-foot .quit { margin-left: auto; color: var(--text-2); }
+
+  /* Sections */
+  section { padding: 88px 0 0; scroll-margin-top: -24px; }
+  #beta { scroll-margin-top: 72px; }
+  h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 12px; }
+  .sub { color: var(--text-2); font-size: 18px; max-width: 40em; margin: 0 0 40px; }
+
+  .buckets { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+  .bucket { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 12px; background: var(--surface);
+            box-shadow: 0 0 0 1px var(--line); }
+  .chip { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; flex: none;
+          background: color-mix(in srgb, var(--t) 16%, transparent); color: var(--t); }
+  .chip .ico { font-size: 16px; }
+  .bucket b { display: block; font-size: 14.5px; }
+  .bucket span { font-size: 13px; color: var(--text-2); }
+
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 28px; font-size: 14px; color: var(--text-2); }
+  .flow .tag { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; font-weight: 600;
+               color: var(--t); background: color-mix(in srgb, var(--t) 14%, transparent); }
+  .flow .tag .ico { font-size: 12px; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .feature { background: var(--surface); border-radius: 16px; padding: 24px; box-shadow: 0 0 0 1px var(--line); }
+  .feature .chip { width: 40px; height: 40px; border-radius: 10px; margin-bottom: 14px; }
+  .feature .chip .ico { font-size: 20px; }
+  .feature h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.01em; }
+  .feature p { margin: 0; color: var(--text-2); font-size: 15px; }
+  .feature code { font: 13px ui-monospace, "SF Mono", Menlo, monospace; background: var(--surface-2); padding: 1px 6px; border-radius: 5px; }
+
+  .privacy { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .privacy div { border-top: 2px solid var(--line); padding-top: 16px; }
+  .privacy h3 { margin: 0 0 6px; font-size: 16px; }
+  .privacy p { margin: 0; color: var(--text-2); font-size: 15px; }
+
+  .final { margin-top: 96px; padding: 56px 24px; border-radius: 24px; text-align: center; background: var(--surface);
+           box-shadow: 0 0 0 1px var(--line); }
+  .final > .ico { font-size: 56px; }
+  .final h2 { margin-top: 16px; }
+  .final p { color: var(--text-2); margin: 0 auto 24px; max-width: 32em; }
+
+  footer { padding: 48px 0 40px; color: var(--text-3); font-size: 13px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+  footer a { color: var(--text-2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#"><i class="ico" style="--src:url(assets/pull-request.svg)"></i>PRzzz</a>
+    <div class="links">
+      <a href="#buckets">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <!-- TODO: point at the TestFlight public link or a waitlist form. -->
+      <a class="btn small" href="#beta">Join the beta</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Free beta · macOS 15 or later</span>
+    <h1>Your pull requests, one click away.</h1>
+    <p class="lede">PRzzz lives in your Mac's menu bar and sorts every GitHub pull request into what needs you, what's waiting on someone else, and what's done. You won't need to keep a browser tab open for it.</p>
+    <div class="cta-row">
+      <a class="btn" href="#beta">Join the beta</a>
+      <a class="btn ghost" href="#buckets">See how it works</a>
+    </div>
+
+    <div class="desk" aria-label="The PRzzz menu, open from the menu bar">
+      <div class="menubar">
+        <span class="faint">Wi‑Fi</span>
+        <span class="item on" title="3 reviews + 2 of your PRs need action"><i class="ico" style="--src:url(assets/pull-request.svg)"></i>5</span>
+        <span class="faint">Mon 9 Nov&nbsp;&nbsp;10:42</span>
+      </div>
+      <div class="stage">
+        <div class="menu">
+          <div class="m-head">
+            <b>PRzzz</b><span class="login">@octo-dev</span>
+            <span class="tools"><i class="ico" style="--src:url(assets/icons/settings-sliders.svg)"></i><i class="ico" style="--src:url(assets/icons/settings.svg)"></i></span>
+          </div>
+          <div class="m-body">
+            <div class="sec" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs your review<span class="pill">3</span></div>
+            <div class="row" style="--t:var(--blue)">
+              <span class="av" style="--c:#e0624f">A</span>
+              <div><div class="title">Add dark mode to the settings page</div><div class="meta">acme/web-app #482 · alice · 20m</div></div>
+              <div class="side"><span class="status" style="--s:var(--text-2)">Review required</span><span class="counts"><span>0/1</span><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>3</span></span></div>
+            </div>
+            <div class="row" style="--t:var(--blue)">
+              <span class="av" style="--c:#4f8ae0">B</span>
+              <div><div class="title">Migrate payments to the new API client</div><div class="meta">acme/web-api #1207 · bob · 1h</div></div>
+              <div class="side"><span class="status" style="--s:var(--orange)">Checks running</span><span class="counts"><span>0/2</span><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>8</span></span></div>
+            </div>
+            <div class="row" style="--t:var(--blue)">
+              <span class="av" style="--c:#6b7a8f">D</span>
+              <div><div class="title">Bump the AWS provider to 6.2</div><div class="meta">acme/infra-terraform #88 · dependabot · 1d</div></div>
+              <div class="side"><span class="status" style="--s:var(--text-2)">Review required</span><span class="counts"><span>0/1</span></span></div>
+            </div>
+
+            <div class="sec" style="--t:var(--red)"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i>Needs action<span class="pill">2</span></div>
+            <div class="row" style="--t:var(--red)">
+              <span class="av" style="--c:#8a5cf0">O</span>
+              <div><div class="title">Update the onboarding copy</div><div class="meta">acme/docs #52 · octo-dev · 2h</div></div>
+              <div class="side"><span class="status" style="--s:var(--red)">Checks failing</span><span class="counts"><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>1</span></span></div>
+            </div>
+            <div class="row" style="--t:var(--red)">
+              <span class="av" style="--c:#8a5cf0">O</span>
+              <div><div class="title">Cache avatars on disk</div><div class="meta">acme/web-app #486 · octo-dev · 10h</div></div>
+              <div class="side"><span class="status" style="--s:var(--red)">Changes requested</span><span class="counts"><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>6</span></span></div>
+            </div>
+
+            <div class="sec" style="--t:var(--green)"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i>Ready to merge<span class="pill">1</span></div>
+            <div class="row" style="--t:var(--green)">
+              <span class="av" style="--c:#8a5cf0">O</span>
+              <div><div class="title">Add a rate limit dashboard</div><div class="meta">acme/web-admin #71 · octo-dev · 6h</div></div>
+              <div class="side"><span class="status" style="--s:var(--green)">Ready to merge</span><span class="counts"><span>2/2</span><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>4</span></span></div>
+            </div>
+
+            <div class="sec" style="--t:var(--yellow)"><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i>Waiting for review or checks<span class="pill">2</span></div>
+            <div class="row" style="--t:var(--yellow)">
+              <span class="av" style="--c:#8a5cf0">O</span>
+              <div><div class="title">Speed up search indexing</div><div class="meta">acme/web-api #1211 · octo-dev · 8m</div></div>
+              <div class="side"><span class="status" style="--s:var(--orange)">Checks running</span><span class="counts"><span>0/1</span></span></div>
+              <div class="ci"><div class="bar"><i></i></div>Running · 3m of ~7m · 4/9 checks</div>
+            </div>
+            <div class="row" style="--t:var(--yellow)">
+              <span class="av" style="--c:#8a5cf0">O</span>
+              <div><div class="title">Document the release process</div><div class="meta">acme/docs #57 · octo-dev · 5h</div></div>
+              <div class="side"><span class="status" style="--s:var(--text-2)">Review required</span><span class="counts"><span>0/1</span></span></div>
+            </div>
+          </div>
+          <div class="m-foot">
+            <i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Updated 10:42 (just now)
+            <span class="quit">Quit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="buckets">
+  <div class="wrap">
+    <h2>Sorted the way you work.</h2>
+    <p class="sub">PRzzz groups your pull requests the way GitHub's inbox does: what needs you comes first, then what's waiting on someone else, then what's done. Each section has its own colour, so you can tell them apart at a glance. You can drag the sections into any order.</p>
+    <div class="buckets">
+      <div class="bucket" style="--t:var(--blue)"><span class="chip"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i></span><div><b>Needs your review</b><span>Someone asked you to take a look.</span></div></div>
+      <div class="bucket" style="--t:var(--red)"><span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span><div><b>Needs action</b><span>Your PRs with conflicts, failing checks or requested changes.</span></div></div>
+      <div class="bucket" style="--t:var(--orange)"><span class="chip"><i class="ico" style="--src:url(assets/icons/rotate-left.svg)"></i></span><div><b>Your review was dismissed</b><span>New commits reset your approval, and nobody asked you again.</span></div></div>
+      <div class="bucket" style="--t:var(--green)"><span class="chip"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i></span><div><b>Ready to merge</b><span>Approved and green. Ship it.</span></div></div>
+      <div class="bucket" style="--t:var(--teal)"><span class="chip"><i class="ico" style="--src:url(assets/icons/comment-alt-dots.svg)"></i></span><div><b>You left comments</b><span>PRs where you've had your say and are waiting for answers.</span></div></div>
+      <div class="bucket" style="--t:var(--yellow)"><span class="chip"><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i></span><div><b>Waiting for review or checks</b><span>Your PRs that are on someone else's clock.</span></div></div>
+      <div class="bucket" style="--t:var(--indigo)"><span class="chip"><i class="ico" style="--src:url(assets/icons/users-alt.svg)"></i></span><div><b>Needs your team's review</b><span>Requests sent to a team you're on.</span></div></div>
+      <div class="bucket" style="--t:var(--gray)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-pull-request-draft.svg)"></i></span><div><b>Your drafts</b><span>Work in progress, out of the way.</span></div></div>
+      <div class="bucket" style="--t:var(--mint)"><span class="chip"><i class="ico" style="--src:url(assets/icons/thumbs-up.svg)"></i></span><div><b>Approved by you</b><span>Done on your side and not merged yet.</span></div></div>
+      <div class="bucket" style="--t:var(--purple)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i></span><div><b>Merged in the last hour</b><span>A short victory lap, from 5 minutes to 24 hours.</span></div></div>
+      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>Keep an eye on the people you work with most.</span></div></div>
+      <div class="bucket" style="--t:var(--pink)"><span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span><div><b>While you were away</b><span>What changed while your screen was locked.</span></div></div>
+    </div>
+
+    <div class="flow" aria-label="How a pull request moves between sections as you review it">
+      As you review a PR, it moves with you:
+      <span class="tag" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs review</span>→
+      <span class="tag" style="--t:var(--mint)"><i class="ico" style="--src:url(assets/icons/thumbs-up.svg)"></i>Approved</span>→
+      <span class="tag" style="--t:var(--orange)"><i class="ico" style="--src:url(assets/icons/rotate-left.svg)"></i>Dismissed</span>→
+      <span class="tag" style="--t:var(--purple)"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i>Merged</span>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2>Small app. Sharp details.</h2>
+    <p class="sub">PRzzz stays out of your way until something needs you.</p>
+    <div class="features">
+      <div class="feature" style="--t:var(--blue)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/stopwatch.svg)"></i></span>
+        <h3>CI progress with real estimates</h3>
+        <p>See how far along each build is, for example "Running · 3m of ~7m". Estimates come from the median of your last ten successful runs. When the checks finish, your inbox refreshes.</p>
+      </div>
+      <div class="feature" style="--t:var(--red)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span>
+        <h3>A badge that means something</h3>
+        <p>The menu bar counts your review requests and your PRs that need action. The icon turns red when something of yours is blocked.</p>
+      </div>
+      <div class="feature" style="--t:var(--pink)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span>
+        <h3>While you were away</h3>
+        <p>Lock your Mac for lunch. When you come back, PRzzz shows what changed in a section of its own for the next ten minutes.</p>
+      </div>
+      <div class="feature" style="--t:var(--indigo)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/browsers.svg)"></i></span>
+        <h3>Pop out a floating window</h3>
+        <p>Pin the PRs you're watching to a small panel that stays above your other apps and keeps itself up to date.</p>
+      </div>
+      <div class="feature" style="--t:var(--green)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/filter.svg)"></i></span>
+        <h3>Filter by repository</h3>
+        <p>Pick repositories, or use patterns like <code>acme/web-*</code>, so repositories created later match too. Your own PRs can always show.</p>
+      </div>
+      <div class="feature" style="--t:var(--brown)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/users.svg)"></i></span>
+        <h3>Custom buckets</h3>
+        <p>Make a section for the teammates whose work you follow, and see their open PRs in one place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <h2>Your code stays yours.</h2>
+    <p class="sub">PRzzz talks to GitHub's API directly from your Mac. There's no PRzzz server in between.</p>
+    <div class="privacy">
+      <div><h3>Token in the Keychain</h3><p>Your token is stored in the macOS Keychain, and it's only ever sent to GitHub.</p></div>
+      <div><h3>Sandboxed</h3><p>PRzzz runs in the App Sandbox with network access only. It can't read your files.</p></div>
+      <div><h3>Easy sign-in</h3><p>Use the token GitHub CLI already has, or create a personal access token with the scopes filled in for you.</p></div>
+      <div><h3>Light on your rate limit</h3><p>Built-in rate limit stats show exactly how many calls PRzzz makes.</p></div>
+    </div>
+    <!-- TODO: link the privacy policy once it exists, and mention the anonymous analytics and crash reports. -->
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="final" id="beta">
+    <i class="ico" style="--src:url(assets/pull-request.svg)"></i>
+    <h2>Try PRzzz free.</h2>
+    <p>PRzzz is in beta. Join to get early builds and help shape what comes next.</p>
+    <!-- TODO: replace with the TestFlight public link or a waitlist form. -->
+    <a class="btn" href="#">Join the beta</a>
+    <p class="fine">Requires macOS 15 or later.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 PRzzz. Not affiliated with GitHub, Inc.</span>
+    <span>Icons: <a href="https://www.flaticon.com/uicons">UIcons by Flaticon</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
