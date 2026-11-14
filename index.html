@@ -25,6 +25,10 @@
     --blue: #007aff;   --red: #ff3b30;    --orange: #ff9500; --green: #28cd41;
     --teal: #30b0c7;   --yellow: #b38f00; --indigo: #5856d6; --gray: #8e8e93;
     --mint: #00a39c;   --purple: #af52de; --pink: #ff2d55;   --brown: #a2845e;
+
+    /* GitHub's Primer colours (bgColor-*-emphasis), as the app uses for status bars. */
+    --success: #1f883d; --attention: #9a6700; --danger: #cf222e; --severe: #bc4c00; --neutral: #59636e;
+    --track: rgba(0, 0, 0, 0.1);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -44,6 +48,9 @@
       --blue: #0a84ff;   --red: #ff453a;    --orange: #ff9f0a; --green: #32d74b;
       --teal: #40c8e0;   --yellow: #ffd60a; --indigo: #5e5ce6; --gray: #98989d;
       --mint: #63e6e2;   --purple: #bf5af2; --pink: #ff375f;   --brown: #ac8e68;
+
+      --success: #238636; --attention: #9e6a03; --danger: #da3633; --severe: #bd561d; --neutral: #656c76;
+      --track: rgba(255, 255, 255, 0.1);
     }
   }
   :root[data-theme="dark"] {
@@ -54,6 +61,8 @@
     --blue: #0a84ff; --red: #ff453a; --orange: #ff9f0a; --green: #32d74b; --teal: #40c8e0;
     --yellow: #ffd60a; --indigo: #5e5ce6; --gray: #98989d; --mint: #63e6e2; --purple: #bf5af2;
     --pink: #ff375f; --brown: #ac8e68;
+    --success: #238636; --attention: #9e6a03; --danger: #da3633; --severe: #bd561d; --neutral: #656c76;
+    --track: rgba(255, 255, 255, 0.1);
   }
 
   * { box-sizing: border-box; }
@@ -130,29 +139,43 @@
   .m-head .login { color: var(--text-3); }
   .m-head .tools { margin-left: auto; display: flex; gap: 12px; color: var(--text-2); }
   .m-head .tools .ico { font-size: 14px; }
-  .m-body { max-height: 545px; overflow: hidden; position: relative; }
+  .m-body { max-height: 700px; overflow: hidden; position: relative; }
   .m-body::after { content: ""; position: absolute; inset: auto 0 0; height: 48px;
                    background: linear-gradient(transparent, var(--surface)); pointer-events: none; }
-  .sec { display: flex; align-items: center; gap: 7px; padding: 8px 12px 6px; font-weight: 600; color: var(--t);
-         background: color-mix(in srgb, var(--surface-2) 70%, var(--surface)); border-bottom: 1px solid var(--line); }
+  /* Section headers, as in the app: a 12% wash of the section's colour, its 4 pt
+     stripe down the left edge, and a hairline of the colour at 35% underneath. */
+  .sec { position: relative; display: flex; align-items: center; gap: 7px; padding: 7px 12px 7px 14px; font-weight: 600; color: var(--t);
+         background: color-mix(in srgb, var(--t) 12%, var(--surface));
+         border-bottom: 0.5px solid color-mix(in srgb, var(--t) 35%, transparent); }
+  .sec::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--t); }
   .sec .ico { font-size: 13px; }
   .pill { margin-left: auto; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px;
           background: color-mix(in srgb, var(--t) 18%, transparent); color: var(--t); }
-  .row { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 12px 8px 14px;
-         position: relative; border-bottom: 1px solid var(--line); }
-  .row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--t); }
-  .av { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700;
+  /* A PR row, laid out like the app's: avatar, then title, repo line, status with the
+     Checks / Comments / Approvals bars, and build progress; pop-out button on the right. */
+  .row { display: grid; grid-template-columns: 22px minmax(0, 1fr) 14px; gap: 10px; align-items: start;
+         padding: 7px 12px 7px 14px; position: relative; border-bottom: 1px solid var(--line); }
+  .row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--t); }
+  .av { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 10.5px; font-weight: 700;
         color: #fff; background: var(--c); }
-  .row .title { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .row .meta { color: var(--text-3); font-size: 11.5px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .row .side { text-align: right; font-size: 11px; color: var(--text-3); display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
-  .status { font-weight: 600; color: var(--s); white-space: nowrap; }
-  .counts { display: flex; gap: 8px; align-items: center; }
-  .counts span { display: inline-flex; gap: 3px; align-items: center; }
-  .counts .ico { font-size: 10px; }
-  .ci { grid-column: 2 / 4; margin-top: 2px; font-size: 11px; color: var(--text-3); }
-  .bar { height: 4px; border-radius: 2px; background: var(--surface-2); overflow: hidden; margin-bottom: 4px; }
-  .bar i { display: block; height: 100%; width: 43%; background: var(--accent); border-radius: 2px;
+  .row .main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .row .title { font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .row .meta { color: var(--text-3); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .line { display: flex; align-items: center; gap: 12px; font-size: 11px; }
+  .row .pop { font-size: 14px; color: var(--text-3); margin-top: 1px; }
+  /* As wide as the longest status ("Changes requested"), so the bars line up. */
+  .status { display: inline-flex; align-items: center; gap: 3px; min-width: 112px; color: var(--s); white-space: nowrap; }
+  .status .ico { font-size: 11px; }
+  .sb { flex: 1; display: flex; align-items: center; gap: 4px; min-width: 0; padding: 3px 0; }
+  .sb > .ico { font-size: 11px; color: var(--ic, var(--text-3)); }
+  .seg { flex: 1; min-width: 24px; height: 5px; border-radius: 3px; overflow: hidden; display: flex; gap: 1px; background: var(--track); }
+  /* Each segment gets 4 px, then a share of the rest by count, as in the app. */
+  .seg i { flex: var(--n) 1 4px; background: var(--k); }
+  .ci { margin-top: 2px; font-size: 10px; color: var(--text-3); }
+  .ci .label { display: flex; justify-content: space-between; gap: 4px; white-space: nowrap; }
+  .ci .label span:last-child { opacity: 0.7; }
+  .bar { height: 4px; border-radius: 2px; background: var(--track); overflow: hidden; margin-bottom: 3px; }
+  .bar i { display: block; height: 100%; width: 43%; background: var(--success); border-radius: 2px;
            animation: grow 6s ease-in-out infinite alternate; }
   @keyframes grow { from { width: 38% } to { width: 62% } }
   @media (prefers-reduced-motion: reduce) { .bar i { animation: none; } }
@@ -187,6 +210,35 @@
   .feature h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.01em; }
   .feature p { margin: 0; color: var(--text-2); font-size: 15px; }
   .feature code { font: 13px ui-monospace, "SF Mono", Menlo, monospace; background: var(--surface-2); padding: 1px 6px; border-radius: 5px; }
+
+  /* The status summary spotlight, with the app's Approvals hover card. */
+  .spot { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; align-items: center; margin-bottom: 16px;
+          background: var(--surface); border-radius: 16px; padding: 28px; box-shadow: 0 0 0 1px var(--line); }
+  @media (max-width: 760px) { .spot { grid-template-columns: minmax(0, 1fr); padding: 24px; } }
+  .spot .chip { width: 40px; height: 40px; border-radius: 10px; margin-bottom: 14px; }
+  .spot .chip .ico { font-size: 20px; }
+  .spot h3 { margin: 0 0 6px; font-size: 22px; letter-spacing: -0.01em; }
+  .spot p { margin: 0; color: var(--text-2); font-size: 15px; }
+  .spot .fine-print { margin-top: 10px; font-size: 13px; color: var(--text-3); }
+  .hovercard { background: var(--bg); border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.3;
+               box-shadow: 0 12px 30px -10px rgba(0,0,0,0.3), 0 0 0 0.5px var(--line); display: flex; flex-direction: column; gap: 8px; }
+  .hc-head { display: flex; gap: 6px; align-items: baseline; }
+  .hc-head span { color: var(--text-2); }
+  .seg.exact { flex: none; width: 100%; }
+  .seg.exact i { flex: var(--n) 1 0; }
+  .hc-line { display: flex; align-items: center; gap: 6px; }
+  .hc-line .ico { font-size: 13px; }
+  .reviewers { display: flex; flex-direction: column; gap: 5px; padding-top: 6px; border-top: 1px solid var(--line); }
+  .rv { display: flex; align-items: center; gap: 7px; }
+  .rv.child { padding-left: 22px; position: relative; }
+  .rv.child::before { content: ""; position: absolute; left: 8px; top: -6px; width: 9px; height: 15px;
+                    border-left: 1px solid var(--text-3); border-bottom: 1px solid var(--text-3); border-bottom-left-radius: 4px; }
+  .rv .av { width: 18px; height: 18px; font-size: 9.5px; }
+  .rv .av.sq { border-radius: 5px; }
+  .rv > .ico { font-size: 12px; margin-left: auto; color: var(--text-3); }
+  .rv > .ico.state { margin-left: auto; }
+  .rv .dot { margin-left: auto; width: 7px; height: 7px; border-radius: 50%; background: var(--attention); }
+  .hc-foot { font-size: 11px; color: var(--text-2); }
 
   .privacy { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
   .privacy div { border-top: 2px solid var(--line); padding-top: 16px; }
@@ -245,8 +297,8 @@
                   color: rgba(0,0,0,0.6); font-size: 10px; line-height: 12px; }
   .fwin .tclose span { opacity: 0; }
   .fwin .tbar:hover .tclose span, .fwin .tclose:focus-visible span { opacity: 1; }
-  .fwin .row { grid-template-columns: 24px minmax(0, 1fr) auto 14px; border-bottom: 0; }
-  .fwin .remove { border: 0; background: none; padding: 0; cursor: pointer; color: var(--text-3); font-size: 15px; line-height: 1; }
+  .fwin .row { border-bottom: 0; }
+  .fwin .remove { border: 0; background: none; padding: 0; cursor: pointer; color: var(--text-3); font-size: 16px; line-height: 1; }
   .fwin .remove:hover { color: var(--text); }
   .flying { position: fixed; z-index: 21; margin: 0; background: var(--surface); font-size: 13px; line-height: 1.3;
             border-radius: 6px; box-shadow: 0 12px 30px -8px rgba(0,0,0,0.45), 0 0 0 0.5px var(--line);
@@ -284,63 +336,97 @@
     <div class="desk" aria-label="The PRzzz menu, open from the menu bar">
       <div class="menubar">
         <span class="faint">Wi‑Fi</span>
-        <span class="item on" title="3 reviews + 2 of your PRs need action"><i class="ico" style="--src:url(assets/pull-request.svg)"></i>5</span>
+        <span class="item on" title="2 review requests, 2 of your PRs need action, 1 draft"><i class="ico" style="--src:url(assets/pull-request.svg)"></i>5</span>
         <span class="faint">Mon 9 Nov&nbsp;&nbsp;10:42</span>
       </div>
       <div class="stage">
         <div class="menu">
           <div class="m-head">
             <b>PRzzz</b><span class="login">@octo-dev</span>
-            <span class="tools"><i class="ico" style="--src:url(assets/icons/settings-sliders.svg)"></i><i class="ico" style="--src:url(assets/icons/settings.svg)"></i></span>
+            <span class="tools"><i class="ico" style="--src:url(assets/icons/settings.svg)"></i></span>
           </div>
           <div class="m-body">
-            <div class="sec" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs your review<span class="pill">3</span></div>
+            <div class="sec" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs your review<span class="pill">2</span></div>
             <div class="row" style="--t:var(--blue)">
               <span class="av" style="--c:#e0624f">A</span>
-              <div><div class="title">Add dark mode to the settings page</div><div class="meta">acme/web-app #482 · alice · 20m</div></div>
-              <div class="side"><span class="status" style="--s:var(--text-2)">Review required</span><span class="counts"><span>0/1</span><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>3</span></span></div>
+              <div class="main">
+                <div class="title">Add dark mode to the settings page</div>
+                <div class="meta">acme/web-app #482 · alice · 20m</div>
+                <div class="line"><span class="status" style="--s:var(--blue)"><i class="ico" style="--src:url(assets/icons/eye.svg)"></i>Review required</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
             <div class="row" style="--t:var(--blue)">
               <span class="av" style="--c:#4f8ae0">B</span>
-              <div><div class="title">Migrate payments to the new API client</div><div class="meta">acme/web-api #1207 · bob · 1h</div></div>
-              <div class="side"><span class="status" style="--s:var(--orange)">Checks running</span><span class="counts"><span>0/2</span><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>8</span></span></div>
-            </div>
-            <div class="row" style="--t:var(--blue)">
-              <span class="av" style="--c:#6b7a8f">D</span>
-              <div><div class="title">Bump the AWS provider to 6.2</div><div class="meta">acme/infra-terraform #88 · dependabot · 1d</div></div>
-              <div class="side"><span class="status" style="--s:var(--text-2)">Review required</span><span class="counts"><span>0/1</span></span></div>
+              <div class="main">
+                <div class="title">Migrate payments to the new API client</div>
+                <div class="meta">acme/web-api #1207 · bob · 1h</div>
+                <div class="line"><span class="status" style="--s:var(--orange)"><i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Checks running</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
 
             <div class="sec" style="--t:var(--red)"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i>Needs action<span class="pill">2</span></div>
             <div class="row" style="--t:var(--red)">
               <span class="av" style="--c:#8a5cf0">O</span>
-              <div><div class="title">Update the onboarding copy</div><div class="meta">acme/docs #52 · octo-dev · 2h</div></div>
-              <div class="side"><span class="status" style="--s:var(--red)">Checks failing</span><span class="counts"><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>1</span></span></div>
+              <div class="main">
+                <div class="title">Update the onboarding copy</div>
+                <div class="meta">acme/docs #52 · octo-dev · 2h</div>
+                <div class="line"><span class="status" style="--s:var(--red)"><i class="ico" style="--src:url(assets/icons/cross-circle.svg)"></i>Checks failing</span><span class="sb" title="Checks: 1 failing, 6 successful"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--danger)"></i><span class="seg"><i style="--n:6; --k:var(--success)"></i><i style="--n:1; --k:var(--danger)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: no reviewers yet, 1 required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"></span></span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
             <div class="row" style="--t:var(--red)">
               <span class="av" style="--c:#8a5cf0">O</span>
-              <div><div class="title">Cache avatars on disk</div><div class="meta">acme/web-app #486 · octo-dev · 10h</div></div>
-              <div class="side"><span class="status" style="--s:var(--red)">Changes requested</span><span class="counts"><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>6</span></span></div>
+              <div class="main">
+                <div class="title">Cache avatars on disk</div>
+                <div class="meta">acme/web-app #486 · octo-dev · 10h</div>
+                <div class="line"><span class="status" style="--s:var(--red)"><i class="ico" style="--src:url(assets/icons/undo.svg)"></i>Changes requested</span><span class="sb" title="Checks: all 8 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:8; --k:var(--success)"></i></span></span><span class="sb" title="Comments: 2 unresolved, 1 resolved"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"><i style="--n:1; --k:var(--success)"></i><i style="--n:2; --k:var(--neutral)"></i></span></span><span class="sb" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+
+            <div class="sec" style="--t:var(--gray)"><i class="ico" style="--src:url(assets/icons/code-pull-request-draft.svg)"></i>Your drafts<span class="pill">1</span></div>
+            <div class="row" style="--t:var(--gray)">
+              <span class="av" style="--c:#8a5cf0">O</span>
+              <div class="main">
+                <div class="title">WIP: offline sync for the iOS app</div>
+                <div class="meta">acme/ios-app #233 · octo-dev · 45m</div>
+                <div class="line"><span class="status" style="--s:var(--text-3)"><i class="ico" style="--src:url(assets/icons/pencil.svg)"></i>Draft</span><span class="sb" title="Checks: no checks"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i><span class="seg"></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: no reviewers yet, 1 required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"></span></span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
 
             <div class="sec" style="--t:var(--green)"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i>Ready to merge<span class="pill">1</span></div>
             <div class="row" style="--t:var(--green)">
               <span class="av" style="--c:#8a5cf0">O</span>
-              <div><div class="title">Add a rate limit dashboard</div><div class="meta">acme/web-admin #71 · octo-dev · 6h</div></div>
-              <div class="side"><span class="status" style="--s:var(--green)">Ready to merge</span><span class="counts"><span>2/2</span><span><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>4</span></span></div>
+              <div class="main">
+                <div class="title">Add a rate limit dashboard</div>
+                <div class="meta">acme/web-admin #71 · octo-dev · 6h</div>
+                <div class="line"><span class="status" style="--s:var(--green)"><i class="ico" style="--src:url(assets/icons/check-circle.svg)"></i>Ready to merge</span><span class="sb" title="Checks: all 12 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:12; --k:var(--success)"></i></span></span><span class="sb" title="Comments: all 2 resolved"><i class="ico" style="--src:url(assets/icons/comment.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:2; --k:var(--success)"></i></span></span><span class="sb" title="Approvals: approved, 2 of 2"><i class="ico" style="--src:url(assets/icons/badge-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:2; --k:var(--success)"></i></span></span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
 
             <div class="sec" style="--t:var(--yellow)"><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i>Waiting for review or checks<span class="pill">2</span></div>
             <div class="row" id="ci-row" style="--t:var(--yellow)">
               <span class="av" style="--c:#8a5cf0">O</span>
-              <div><div class="title">Speed up search indexing</div><div class="meta">acme/web-api #1211 · octo-dev · 8m</div></div>
-              <div class="side"><span class="status" style="--s:var(--orange)">Checks running</span><span class="counts"><span>0/1</span></span></div>
-              <div class="ci"><div class="bar"><i></i></div>Running · 3m of ~7m · 4/9 checks</div>
+              <div class="main">
+                <div class="title">Speed up search indexing</div>
+                <div class="meta">acme/web-api #1211 · octo-dev · 8m</div>
+                <div class="line"><span class="status" style="--s:var(--orange)"><i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Checks running</span><span class="sb" title="Checks: 5 pending, 4 successful"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i><span class="seg"><i style="--n:4; --k:var(--success)"></i><i style="--n:5; --k:var(--attention)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
+                <div class="ci"><div class="bar"><i></i></div><div class="label"><span>Running · 3m of ~7m</span><span>4/9 checks</span></div></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
             <div class="row" style="--t:var(--yellow)">
               <span class="av" style="--c:#8a5cf0">O</span>
-              <div><div class="title">Document the release process</div><div class="meta">acme/docs #57 · octo-dev · 5h</div></div>
-              <div class="side"><span class="status" style="--s:var(--text-2)">Review required</span><span class="counts"><span>0/1</span></span></div>
+              <div class="main">
+                <div class="title">Document the release process</div>
+                <div class="meta">acme/docs #57 · octo-dev · 5h</div>
+                <div class="line"><span class="status" style="--s:var(--blue)"><i class="ico" style="--src:url(assets/icons/eye.svg)"></i>Review required</span><span class="sb" title="Checks: all 9 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:9; --k:var(--success)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
           </div>
           <div class="m-foot">
@@ -356,19 +442,19 @@
 <section id="buckets">
   <div class="wrap">
     <h2>Sorted the way you work.</h2>
-    <p class="sub">PRzzz groups your pull requests the way GitHub's inbox does: what needs you comes first, then what's waiting on someone else, then what's done. Each section has its own colour, so you can tell them apart at a glance. You can drag the sections into any order.</p>
+    <p class="sub">PRzzz groups your pull requests the way GitHub's inbox does: what needs you comes first, then what's waiting on someone else, then what's done. Each section has its own colour, so you can tell them apart at a glance. You can put the sections in any order in Settings.</p>
     <div class="buckets">
       <div class="bucket" style="--t:var(--blue)"><span class="chip"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i></span><div><b>Needs your review</b><span>Someone asked you to take a look.</span></div></div>
       <div class="bucket" style="--t:var(--red)"><span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span><div><b>Needs action</b><span>Your PRs with conflicts, failing checks or requested changes.</span></div></div>
+      <div class="bucket" style="--t:var(--gray)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-pull-request-draft.svg)"></i></span><div><b>Your drafts</b><span>Work in progress, right under Needs action since it's yours to finish.</span></div></div>
       <div class="bucket" style="--t:var(--orange)"><span class="chip"><i class="ico" style="--src:url(assets/icons/rotate-left.svg)"></i></span><div><b>Your review was dismissed</b><span>New commits reset your approval, and nobody asked you again.</span></div></div>
       <div class="bucket" style="--t:var(--green)"><span class="chip"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i></span><div><b>Ready to merge</b><span>Approved and green. Ship it.</span></div></div>
       <div class="bucket" style="--t:var(--teal)"><span class="chip"><i class="ico" style="--src:url(assets/icons/comment-alt-dots.svg)"></i></span><div><b>You left comments</b><span>PRs where you've had your say and are waiting for answers.</span></div></div>
       <div class="bucket" style="--t:var(--yellow)"><span class="chip"><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i></span><div><b>Waiting for review or checks</b><span>Your PRs that are on someone else's clock.</span></div></div>
       <div class="bucket" style="--t:var(--indigo)"><span class="chip"><i class="ico" style="--src:url(assets/icons/users-alt.svg)"></i></span><div><b>Needs your team's review</b><span>Requests sent to a team you're on.</span></div></div>
-      <div class="bucket" style="--t:var(--gray)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-pull-request-draft.svg)"></i></span><div><b>Your drafts</b><span>Work in progress, out of the way.</span></div></div>
       <div class="bucket" style="--t:var(--mint)"><span class="chip"><i class="ico" style="--src:url(assets/icons/thumbs-up.svg)"></i></span><div><b>Approved by you</b><span>Done on your side and not merged yet.</span></div></div>
-      <div class="bucket" style="--t:var(--purple)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i></span><div><b>Merged in the last hour</b><span>A short victory lap, from 5 minutes to 24 hours.</span></div></div>
-      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>Keep an eye on the people you work with most.</span></div></div>
+      <div class="bucket" style="--t:var(--purple)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i></span><div><b>Merged in the last 24 hours</b><span>A victory lap. Look back anywhere from an hour to a week.</span></div></div>
+      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>The people you work with most, in a colour you pick.</span></div></div>
       <div class="bucket" style="--t:var(--pink)"><span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span><div><b>While you were away</b><span>What changed while your screen was locked.</span></div></div>
     </div>
 
@@ -386,16 +472,36 @@
   <div class="wrap">
     <h2>Small app. Sharp details.</h2>
     <p class="sub">PRzzz stays out of your way until something needs you.</p>
+    <div class="spot">
+      <div>
+        <span class="chip" style="--t:var(--green)"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i></span>
+        <h3>Status at a glance</h3>
+        <p>Each of your PRs gets Checks, Comments and Approvals bars, like the summary on GitHub's PR page, so a single failing check stands out. Hover one for the breakdown, with reviewers grouped by team and code owners marked.</p>
+        <p class="fine-print">Show them on your PRs, everyone's, or nobody's in Settings.</p>
+      </div>
+      <div class="hovercard" aria-label="The Approvals hover card">
+        <div class="hc-head"><b>Approvals</b><span>1 still required</span></div>
+        <span class="seg exact"><i style="--n:1; --k:var(--success)"></i><i style="--n:1; --k:var(--attention)"></i></span>
+        <div class="hc-line"><i class="ico" style="--src:url(assets/icons/badge-check.svg); color:var(--success)"></i>1 approval</div>
+        <div class="hc-line"><i class="ico" style="--src:url(assets/icons/clock.svg); color:var(--attention)"></i>1 still required</div>
+        <div class="reviewers">
+          <div class="rv"><span class="av sq" style="--c:#4f8ae0">W</span><span>acme/web-team</span><i class="ico" style="--src:url(assets/icons/shield-check.svg)" title="Code owner"></i></div>
+          <div class="rv child"><span class="av" style="--c:#e0624f">A</span><span>alice</span><i class="ico state" style="--src:url(assets/icons/check-circle.svg); color:var(--success)" title="Approved"></i></div>
+          <div class="rv"><span class="av" style="--c:#2fa36b">C</span><span>carol</span><span class="dot" title="Review requested"></span></div>
+        </div>
+        <div class="hc-foot">2 required by the branch rules</div>
+      </div>
+    </div>
     <div class="features">
       <div class="feature" style="--t:var(--blue)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/stopwatch.svg)"></i></span>
         <h3>CI progress with real estimates</h3>
-        <p>See how far along each build is, for example "Running · 3m of ~7m". Estimates come from the median of your last ten successful runs. When the checks finish, your inbox refreshes.</p>
+        <p>See how far along each build is, for example "Running · 3m of ~7m", estimated from your last ten successful runs. The bar turns orange past the estimate and red once it's well over. Re-runs are timed from the latest attempt, and jobs stuck in the queue are called out.</p>
       </div>
       <div class="feature" style="--t:var(--red)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span>
         <h3>A badge that means something</h3>
-        <p>The menu bar counts your review requests and your PRs that need action. The icon turns red when something of yours is blocked.</p>
+        <p>The menu bar counts your review requests, your PRs that need action and your drafts. The icon turns red when something of yours is blocked, and blue while reviews are waiting.</p>
       </div>
       <div class="feature" id="away" style="--t:var(--pink)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span>
@@ -404,8 +510,8 @@
       </div>
       <div class="feature" style="--t:var(--indigo)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/browsers.svg)"></i></span>
-        <h3>Pop out a floating window</h3>
-        <p>Pin the PRs you're watching to a small panel that stays above your other apps and keeps itself up to date.</p>
+        <h3>Pop out, or open several</h3>
+        <p>Pin the PRs you're watching to a small panel that stays above your other apps. Option-click opens a PR in the background, so the menu stays open for the next one.</p>
       </div>
       <div class="feature" style="--t:var(--green)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/filter.svg)"></i></span>
@@ -415,7 +521,7 @@
       <div class="feature" style="--t:var(--brown)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/users.svg)"></i></span>
         <h3>Custom buckets</h3>
-        <p>Make a section for the teammates whose work you follow, and see their open PRs in one place.</p>
+        <p>Make a section for the teammates whose work you follow, in a colour you pick, and see their open PRs in one place.</p>
       </div>
     </div>
   </div>
@@ -427,8 +533,8 @@
     <p class="sub">PRzzz talks to GitHub's API directly from your Mac. There's no PRzzz server in between.</p>
     <div class="privacy">
       <div><h3>Token in the Keychain</h3><p>Your token is stored in the macOS Keychain, and it's only ever sent to GitHub.</p></div>
-      <div><h3>Sandboxed</h3><p>PRzzz runs in the App Sandbox with network access only. It can't read your files.</p></div>
-      <div><h3>Easy sign-in</h3><p>Use the token GitHub CLI already has, or create a personal access token with the scopes filled in for you.</p></div>
+      <div><h3>Sandboxed</h3><p>PRzzz runs in the App Sandbox, so it can't read your files.</p></div>
+      <div><h3>Easy sign-in</h3><p>One click signs in with the GitHub CLI you already use: Terminal hands over its token, and PRzzz clears it from your clipboard afterwards. A personal access token works too.</p></div>
       <div><h3>Light on your rate limit</h3><p>Built-in rate limit stats show exactly how many calls PRzzz makes.</p></div>
     </div>
     <!-- TODO: link the privacy policy once it exists, and mention the anonymous analytics and crash reports. -->
@@ -448,7 +554,7 @@
 <footer>
   <div class="wrap">
     <span>© 2026 PRzzz. Not affiliated with GitHub, Inc.</span>
-    <span>Icons: <a href="https://www.flaticon.com/uicons">UIcons by Flaticon</a></span>
+    <span>Icons: <a href="https://www.flaticon.com/uicons">UIcons by Flaticon</a> · Status colours: <a href="https://primer.style/primitives">Primer by GitHub</a></span>
   </div>
 </footer>
 
@@ -506,8 +612,8 @@
     remove.className = 'remove';
     remove.type = 'button';
     remove.setAttribute('aria-label', 'Remove from floating window');
-    remove.textContent = '×';
-    row.insertBefore(remove, row.querySelector('.ci'));
+    remove.innerHTML = '<i class="ico" style="--src:url(assets/icons/cross-small.svg)"></i>';
+    row.querySelector('.pop').replaceWith(remove);
     body.appendChild(row);
 
     let flown = false;      // the flight from the menu has played
