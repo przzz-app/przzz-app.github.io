@@ -174,6 +174,9 @@
   .ci { margin-top: 2px; font-size: 10px; color: var(--text-3); }
   .ci .label { display: flex; justify-content: space-between; gap: 4px; white-space: nowrap; }
   .ci .label span:last-child { opacity: 0.7; }
+  .ci .track { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
+  .ci .track .ico { flex: none; font-size: 11px; color: var(--success); }
+  .ci .track .bar { flex: 1; margin-bottom: 0; }
   .bar { height: 4px; border-radius: 2px; background: var(--track); overflow: hidden; margin-bottom: 3px; }
   .bar i { display: block; height: 100%; width: 43%; background: var(--success); border-radius: 2px;
            animation: grow 6s ease-in-out infinite alternate; }
@@ -238,6 +241,15 @@
   .rv > .ico { font-size: 12px; margin-left: auto; color: var(--text-3); }
   .rv > .ico.state { margin-left: auto; }
   .rv .dot { margin-left: auto; width: 7px; height: 7px; border-radius: 50%; background: var(--attention); }
+  .spot p + p { margin-top: 10px; }
+  @media (min-width: 761px) { .spot.flip { grid-template-columns: 320px minmax(0, 1fr); } .spot.flip > .hovercard { order: -1; } }
+  .hc-lines { display: flex; flex-direction: column; gap: 3px; font-variant-numeric: tabular-nums; }
+  .checks { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; border-top: 1px solid var(--line); }
+  .checks a { color: var(--accent); text-decoration: underline; text-decoration-color: transparent; cursor: pointer; }
+  .checks a:hover { text-decoration-color: currentColor; }
+  .checks .wf { font-size: 12px; font-weight: 600; margin-top: 2px; }
+  .checks .ck { display: flex; align-items: center; gap: 6px; padding-left: 4px; font-size: 12.5px; }
+  .checks .ck .ico { font-size: 12px; flex: none; }
   .hc-foot { font-size: 11px; color: var(--text-2); }
 
   .privacy { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
@@ -415,7 +427,7 @@
                 <div class="title">Speed up search indexing</div>
                 <div class="meta">acme/web-api #1211 · octo-dev · 8m</div>
                 <div class="line"><span class="status" style="--s:var(--orange)"><i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Checks running</span><span class="sb" title="Checks: 5 pending, 4 successful"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i><span class="seg"><i style="--n:4; --k:var(--success)"></i><i style="--n:5; --k:var(--attention)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
-                <div class="ci"><div class="bar"><i></i></div><div class="label"><span>Running · 3m of ~7m</span><span>4/9 checks</span></div></div>
+                <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar"><i></i></div></div><div class="label"><span>Running · 3m of ~7m</span><span>4/9 checks</span></div></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
@@ -442,7 +454,7 @@
 <section id="buckets">
   <div class="wrap">
     <h2>Sorted the way you work.</h2>
-    <p class="sub">PRzzz groups your pull requests the way GitHub's inbox does: what needs you comes first, then what's waiting on someone else, then what's done. Each section has its own colour, so you can tell them apart at a glance. You can put the sections in any order in Settings.</p>
+    <p class="sub">PRzzz groups your pull requests the way GitHub's inbox does: what needs you comes first, then what's waiting on someone else, then what's done. Each section has its own colour, so you can tell them apart at a glance. Empty sections stay hidden, and you can put the rest in any order in Settings.</p>
     <div class="buckets">
       <div class="bucket" style="--t:var(--blue)"><span class="chip"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i></span><div><b>Needs your review</b><span>Someone asked you to take a look.</span></div></div>
       <div class="bucket" style="--t:var(--red)"><span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span><div><b>Needs action</b><span>Your PRs with conflicts, failing checks or requested changes.</span></div></div>
@@ -454,7 +466,7 @@
       <div class="bucket" style="--t:var(--indigo)"><span class="chip"><i class="ico" style="--src:url(assets/icons/users-alt.svg)"></i></span><div><b>Needs your team's review</b><span>Requests sent to a team you're on.</span></div></div>
       <div class="bucket" style="--t:var(--mint)"><span class="chip"><i class="ico" style="--src:url(assets/icons/thumbs-up.svg)"></i></span><div><b>Approved by you</b><span>Done on your side and not merged yet.</span></div></div>
       <div class="bucket" style="--t:var(--purple)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i></span><div><b>Merged in the last 24 hours</b><span>A victory lap. Look back anywhere from an hour to a week.</span></div></div>
-      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>The people you work with most, in a colour you pick.</span></div></div>
+      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>The people you work with most, in a colour you pick, faces and all.</span></div></div>
       <div class="bucket" style="--t:var(--pink)"><span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span><div><b>While you were away</b><span>What changed while your screen was locked.</span></div></div>
     </div>
 
@@ -492,16 +504,44 @@
         <div class="hc-foot">2 required by the branch rules</div>
       </div>
     </div>
-    <div class="features">
-      <div class="feature" style="--t:var(--blue)">
-        <span class="chip"><i class="ico" style="--src:url(assets/icons/stopwatch.svg)"></i></span>
+    <div class="spot flip">
+      <div>
+        <span class="chip" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/stopwatch.svg)"></i></span>
         <h3>CI progress with real estimates</h3>
-        <p>See how far along each build is, for example "Running · 3m of ~7m", estimated from your last ten successful runs. The bar turns orange past the estimate and red once it's well over. Re-runs are timed from the latest attempt, and jobs stuck in the queue are called out.</p>
+        <p>See how far along each build is, for example "Running · 3m of ~7m", estimated from your last ten successful runs. The bar turns orange past the estimate and red once it's well over.</p>
+        <p>Hover the bar for the build card: when it started, when it's due, and every check that isn't done yet, grouped by workflow. Each run and job links straight to its page on GitHub.</p>
+        <p class="fine-print">Re-runs are timed from the latest attempt, and jobs stuck in the queue are called out.</p>
+      </div>
+      <div class="hovercard" aria-label="The build card">
+        <div class="hc-head"><b>Build</b><span>Running</span></div>
+        <div class="hc-lines">
+          <div>Started at 10:39 · 3m ago</div>
+          <div>Usually takes ~7m</div>
+          <div>Due at 10:46 · in ~4m</div>
+          <div>4 of 9 checks done</div>
+          <div>2 waiting for a runner</div>
+        </div>
+        <div class="checks">
+          <a class="wf">CI</a>
+          <div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><a>test (unit)</a></div>
+          <div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><a>test (integration)</a></div>
+          <div class="ck"><i class="ico" style="--src:url(assets/icons/clock.svg); color:var(--neutral)" title="Waiting for a runner"></i><a>e2e (macos-15)</a></div>
+          <a class="wf">Deploy preview</a>
+          <div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><a>build</a></div>
+          <div class="ck"><i class="ico" style="--src:url(assets/icons/clock.svg); color:var(--neutral)" title="Waiting for a runner"></i><a>deploy</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="features">
+      <div class="feature" style="--t:var(--orange)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i></span>
+        <h3>Notifications that matter</h3>
+        <p>Hear about new review requests, a PR of yours going red or turning ready to merge, a PR you just opened, and a build starting after you push. Click one to open the PR.</p>
       </div>
       <div class="feature" style="--t:var(--red)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span>
         <h3>A badge that means something</h3>
-        <p>The menu bar counts your review requests, your PRs that need action and your drafts. The icon turns red when something of yours is blocked, and blue while reviews are waiting.</p>
+        <p>The menu bar counts your review requests, your PRs that need action and your drafts, or whichever sections you tick in Settings. The icon turns red when something of yours is blocked, and blue while reviews are waiting.</p>
       </div>
       <div class="feature" id="away" style="--t:var(--pink)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span>
@@ -516,12 +556,12 @@
       <div class="feature" style="--t:var(--green)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/filter.svg)"></i></span>
         <h3>Filter by repository</h3>
-        <p>Pick repositories, or use patterns like <code>acme/web-*</code>, so repositories created later match too. Your own PRs can always show.</p>
+        <p>Pick repositories, or use patterns like <code>acme/web-*</code>, so repositories created later match too. A Recent tag marks the ones you've worked in lately. Your own PRs can always show.</p>
       </div>
       <div class="feature" style="--t:var(--brown)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/users.svg)"></i></span>
         <h3>Custom buckets</h3>
-        <p>Make a section for the teammates whose work you follow, in a colour you pick, and see their open PRs in one place.</p>
+        <p>Make a section for the teammates whose work you follow, in a colour you pick, and see their open PRs in one place. Their profile pictures sit in the section header; hover them to see who's been busy.</p>
       </div>
     </div>
   </div>
