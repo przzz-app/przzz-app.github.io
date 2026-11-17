@@ -16,6 +16,7 @@
     --text-3: #8e8e93;
     --line: rgba(0, 0, 0, 0.08);
     --accent: #007aff;
+    --commit: #c99a2e; --comment: #8250df; --pro: #ff9500;
     --accent-text: #ffffff;
     --desk-1: #c9d6ff;
     --desk-2: #e2e2f6;
@@ -40,6 +41,7 @@
       --text-3: #6e6e75;
       --line: rgba(255, 255, 255, 0.09);
       --accent: #0a84ff;
+      --commit: #d4a83a; --comment: #8957e5; --pro: #ff9f0a;
       --desk-1: #23264a;
       --desk-2: #3a2440;
       --menubar: rgba(30, 30, 34, 0.55);
@@ -56,6 +58,7 @@
   :root[data-theme="dark"] {
     --bg: #111113; --surface: #1e1e21; --surface-2: #28282c; --text: #f5f5f7;
     --text-2: #a1a1a8; --text-3: #6e6e75; --line: rgba(255, 255, 255, 0.09);
+    --commit: #d4a83a; --comment: #8957e5; --pro: #ff9f0a;
     --accent: #0a84ff; --desk-1: #23264a; --desk-2: #3a2440; --menubar: rgba(30, 30, 34, 0.55);
     --shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.14);
     --blue: #0a84ff; --red: #ff453a; --orange: #ff9f0a; --green: #32d74b; --teal: #40c8e0;
@@ -156,6 +159,14 @@
   .row { display: grid; grid-template-columns: 22px minmax(0, 1fr) 14px; gap: 10px; align-items: start;
          padding: 7px 12px 7px 14px; position: relative; border-bottom: 1px solid var(--line); }
   .row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--t); }
+  .ribbon { position: absolute; left: 0; top: 32px; width: 19px; height: 14px; z-index: 1; display: grid; place-items: center;
+            color: #fff; background: var(--rc); border-radius: 0 4px 4px 0; }
+  .ribbon::after { content: ""; position: absolute; left: 0; top: 14px; border-top: 3px solid color-mix(in srgb, var(--rc) 60%, #000);
+                   border-left: 4px solid transparent; }
+  .ribbon .ico { font-size: 9px; }
+  .ribbon.commit { --rc: var(--commit); }
+  .ribbon.comment { --rc: var(--comment); }
+  .ribbon + .ribbon { top: 44px; }
   .av { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 10.5px; font-weight: 700;
         color: #fff; background: var(--c); }
   .row .main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
@@ -250,6 +261,22 @@
   .checks .wf { font-size: 12px; font-weight: 600; margin-top: 2px; }
   .checks .ck { display: flex; align-items: center; gap: 6px; padding-left: 4px; font-size: 12.5px; }
   .checks .ck .ico { font-size: 12px; flex: none; }
+  .protag { display: inline-block; vertical-align: 3px; margin-left: 6px; padding: 1px 6px; border-radius: 5px; font-size: 10px;
+            font-weight: 700; letter-spacing: 0.04em; color: var(--pro); background: color-mix(in srgb, var(--pro) 15%, transparent); }
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .plan { background: var(--surface); border-radius: 16px; padding: 24px; box-shadow: 0 0 0 1px var(--line); }
+  .plan.pro { box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--pro) 55%, transparent); }
+  .plan h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font-size: 20px; }
+  .plan h3 .ico { color: var(--pro); font-size: 18px; }
+  .plan > p { margin: 0 0 14px; color: var(--text-2); font-size: 14px; }
+  .plan ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; font-size: 14.5px; }
+  .plan li { display: flex; align-items: center; gap: 10px; }
+  .plan li .ico { flex: none; font-size: 15px; color: var(--text-2); }
+  .plan.pro li .ico { color: var(--pro); }
+  .pro-perks { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 28px; }
+  .pro-perks div { border-top: 2px solid var(--line); padding-top: 16px; }
+  .pro-perks h3 { margin: 0 0 6px; font-size: 16px; }
+  .pro-perks p { margin: 0; color: var(--text-2); font-size: 14.5px; }
   .hc-foot { font-size: 11px; color: var(--text-2); }
 
   .privacy { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
@@ -329,6 +356,7 @@
     <div class="links">
       <a href="#buckets">How it works</a>
       <a href="#features">Features</a>
+      <a href="#pro">Pro</a>
       <a href="#privacy">Privacy</a>
       <a class="btn small" href="https://testflight.apple.com/join/VKCrHUpT">Join the beta</a>
     </div>
@@ -360,7 +388,7 @@
           <div class="m-body">
             <div class="sec" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs your review<span class="pill">2</span></div>
             <div class="row" style="--t:var(--blue)">
-              <span class="av" style="--c:#e0624f">A</span>
+              <span class="av" style="--c:#e0624f">A</span><span class="ribbon comment" title="Contains your comment"><i class="ico" style="--src:url(assets/icons/messages-question.svg)"></i></span>
               <div class="main">
                 <div class="title">Add dark mode to the settings page</div>
                 <div class="meta">acme/web-app #482 · alice · 20m</div>
@@ -369,7 +397,7 @@
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
             <div class="row" style="--t:var(--blue)">
-              <span class="av" style="--c:#4f8ae0">B</span>
+              <span class="av" style="--c:#4f8ae0">B</span><span class="ribbon commit" title="Contains your commit"><i class="ico" style="--src:url(assets/icons/hastag.svg)"></i></span><span class="ribbon comment" title="Contains your comment"><i class="ico" style="--src:url(assets/icons/messages-question.svg)"></i></span>
               <div class="main">
                 <div class="title">Migrate payments to the new API client</div>
                 <div class="meta">acme/web-api #1207 · bob · 1h</div>
@@ -454,7 +482,7 @@
 <section id="buckets">
   <div class="wrap">
     <h2>Sorted the way you work.</h2>
-    <p class="sub">PRzzz groups your pull requests the way GitHub's inbox does: what needs you comes first, then what's waiting on someone else, then what's done. Each section has its own colour, so you can tell them apart at a glance. Empty sections stay hidden, and you can put the rest in any order in Settings.</p>
+    <p class="sub">PRzzz groups your pull requests the way GitHub's inbox does: what needs you comes first, then what's waiting on someone else, then what's done. Each section has its own colour, so you can tell them apart at a glance. Empty sections stay hidden, and with Pro you can put the rest in any order.</p>
     <div class="buckets">
       <div class="bucket" style="--t:var(--blue)"><span class="chip"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i></span><div><b>Needs your review</b><span>Someone asked you to take a look.</span></div></div>
       <div class="bucket" style="--t:var(--red)"><span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span><div><b>Needs action</b><span>Your PRs with conflicts, failing checks or requested changes.</span></div></div>
@@ -466,8 +494,8 @@
       <div class="bucket" style="--t:var(--indigo)"><span class="chip"><i class="ico" style="--src:url(assets/icons/users-alt.svg)"></i></span><div><b>Needs your team's review</b><span>Requests sent to a team you're on.</span></div></div>
       <div class="bucket" style="--t:var(--mint)"><span class="chip"><i class="ico" style="--src:url(assets/icons/thumbs-up.svg)"></i></span><div><b>Approved by you</b><span>Done on your side and not merged yet.</span></div></div>
       <div class="bucket" style="--t:var(--purple)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i></span><div><b>Merged in the last 24 hours</b><span>A victory lap. Look back anywhere from an hour to a week.</span></div></div>
-      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>The people you work with most, in a colour you pick, faces and all.</span></div></div>
-      <div class="bucket" style="--t:var(--pink)"><span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span><div><b>While you were away</b><span>What changed while your screen was locked.</span></div></div>
+      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>The people you work with most, in a colour you pick, faces and all. Pro.</span></div></div>
+      <div class="bucket" style="--t:var(--pink)"><span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span><div><b>While you were away</b><span>What changed while your screen was locked. Pro.</span></div></div>
     </div>
 
     <div class="flow" aria-label="How a pull request moves between sections as you review it">
@@ -507,7 +535,7 @@
     <div class="spot flip">
       <div>
         <span class="chip" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/stopwatch.svg)"></i></span>
-        <h3>CI progress with real estimates</h3>
+        <h3>CI progress with real estimates<span class="protag">PRO</span></h3>
         <p>See how far along each build is, for example "Running · 3m of ~7m", estimated from your last ten successful runs. The bar turns orange past the estimate and red once it's well over.</p>
         <p>Hover the bar for the build card: when it started, when it's due, and every check that isn't done yet, grouped by workflow. Each run and job links straight to its page on GitHub.</p>
         <p class="fine-print">Re-runs are timed from the latest attempt, and jobs stuck in the queue are called out.</p>
@@ -535,8 +563,8 @@
     <div class="features">
       <div class="feature" style="--t:var(--orange)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i></span>
-        <h3>Notifications that matter</h3>
-        <p>Hear about new review requests, a PR of yours going red or turning ready to merge, a PR you just opened, and a build starting after you push. Click one to open the PR.</p>
+        <h3>Notifications that matter<span class="protag">PRO</span></h3>
+        <p>Hear about new review requests, a PR of yours going red or turning ready to merge, a PR you just opened, and a build starting after you push. Each PR gets one notification that updates in place, so Notification Center doesn't pile up. Click it to open the PR.</p>
       </div>
       <div class="feature" style="--t:var(--red)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span>
@@ -545,24 +573,67 @@
       </div>
       <div class="feature" id="away" style="--t:var(--pink)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span>
-        <h3>While you were away</h3>
+        <h3>While you were away<span class="protag">PRO</span></h3>
         <p>Lock your Mac for lunch. When you come back, PRzzz shows what changed in a section of its own for the next ten minutes.</p>
       </div>
       <div class="feature" style="--t:var(--indigo)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/browsers.svg)"></i></span>
         <h3>Pop out, or open several</h3>
-        <p>Pin the PRs you're watching to a small panel that stays above your other apps. Option-click opens a PR in the background, so the menu stays open for the next one.</p>
+        <p>Pin the PRs you're watching to a small panel that stays above your other apps (Pro). Option-click opens a PR in the background, so the menu stays open for the next one.</p>
+      </div>
+      <div class="feature" style="--t:var(--purple)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/hastag.svg)"></i></span>
+        <h3>Spot your fingerprints</h3>
+        <p>A gold ribbon marks any PR that contains a commit of yours, and a purple one any PR you've commented on, whoever opened it. They stay in their sections, so you see your stake in other people's work at a glance.</p>
       </div>
       <div class="feature" style="--t:var(--green)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/filter.svg)"></i></span>
         <h3>Filter by repository</h3>
-        <p>Pick repositories, or use patterns like <code>acme/web-*</code>, so repositories created later match too. A Recent tag marks the ones you've worked in lately. Your own PRs can always show.</p>
+        <p>Tick <code>acme/*</code> to follow a whole organization, or use patterns like <code>acme/web-*</code>, so repositories created later match too. A Recent tag marks the ones you've worked in lately. Your own PRs can always show.</p>
       </div>
       <div class="feature" style="--t:var(--brown)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/users.svg)"></i></span>
-        <h3>Custom buckets</h3>
+        <h3>Custom buckets<span class="protag">PRO</span></h3>
         <p>Make a section for the teammates whose work you follow, in a colour you pick, and see their open PRs in one place. Their profile pictures sit in the section header; hover them to see who's been busy.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="pro">
+  <div class="wrap">
+    <h2>Free to use. Pro when you'd rather not check.</h2>
+    <p class="sub">Everything you need to get started is free. Pro keeps an eye on things for you, so you don't have to keep opening the menu.</p>
+    <div class="plans">
+      <div class="plan">
+        <h3>Free</h3>
+        <p>Your whole inbox, sorted.</p>
+        <ul>
+          <li><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Every built-in section</li>
+          <li><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i>Count beside the menu bar icon</li>
+          <li><i class="ico" style="--src:url(assets/icons/comment.svg)"></i>Mini status summaries and their cards</li>
+          <li><i class="ico" style="--src:url(assets/icons/filter.svg)"></i>Repository filter and patterns</li>
+          <li><i class="ico" style="--src:url(assets/icons/hastag.svg)"></i>Commit and comment ribbons</li>
+          <li><i class="ico" style="--src:url(assets/icons/browsers.svg)"></i>Option-click to open in the background</li>
+        </ul>
+      </div>
+      <div class="plan pro">
+        <h3><i class="ico" style="--src:url(assets/icons/crown.svg)"></i>Pro</h3>
+        <p>Everything in Free, plus:</p>
+        <ul>
+          <li><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i>Build progress and the build card</li>
+          <li><i class="ico" style="--src:url(assets/icons/bell.svg)"></i>Notifications: reviews, status, builds and new PRs</li>
+          <li><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i>While you were away</li>
+          <li><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i>Custom sections</li>
+          <li><i class="ico" style="--src:url(assets/icons/coins.svg)"></i>Section order</li>
+          <li><i class="ico" style="--src:url(assets/icons/browsers.svg)"></i>Floating window</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pro-perks">
+      <div><h3>60 days of Pro, free</h3><p>Every Pro feature is on for your first 60 days. No payment details, nothing to cancel.</p></div>
+      <div><h3>A Pro day every month</h3><p>After that, Pro switches on for one day each month, so you can see what you're missing.</p></div>
+      <div><h3>Buy once, or yearly</h3><p>Pro is an in-app purchase on the App Store. If it lapses, your custom sections and settings are kept for when it's back.</p></div>
     </div>
   </div>
 </section>
@@ -575,7 +646,7 @@
       <div><h3>Token in the Keychain</h3><p>Your token is stored in the macOS Keychain, and it's only ever sent to GitHub.</p></div>
       <div><h3>Sandboxed</h3><p>PRzzz runs in the App Sandbox, so it can't read your files.</p></div>
       <div><h3>Easy sign-in</h3><p>One click signs in with the GitHub CLI you already use: Terminal hands over its token, and PRzzz clears it from your clipboard afterwards. A personal access token works too.</p></div>
-      <div><h3>Light on your rate limit</h3><p>Built-in rate limit stats show exactly how many calls PRzzz makes.</p></div>
+      <div><h3>Light on your rate limit</h3><p>Built-in rate limit stats show every call PRzzz makes, and how many GraphQL points each one costs.</p></div>
     </div>
     <!-- TODO: link the privacy policy once it exists, and mention the anonymous analytics and crash reports. -->
   </div>
