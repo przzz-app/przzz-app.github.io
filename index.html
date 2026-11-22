@@ -538,7 +538,7 @@
         <h3>CI progress with real estimates<span class="protag">PRO</span></h3>
         <p>See how far along each build is, for example "Running · 3m of ~7m", estimated from your last ten successful runs. The bar turns orange past the estimate and red once it's well over.</p>
         <p>Hover the bar for the build card: when it started, when it's due, and every check that isn't done yet, grouped by workflow. Each run and job links straight to its page on GitHub.</p>
-        <p class="fine-print">Re-runs are timed from the latest attempt, and jobs stuck in the queue are called out.</p>
+        <p class="fine-print">Re-runs are timed from when GitHub restarted them, and re-running just a few jobs is estimated from those jobs' past times. Jobs stuck in the queue are called out.</p>
       </div>
       <div class="hovercard" aria-label="The build card">
         <div class="hc-head"><b>Build</b><span>Running</span></div>
@@ -645,7 +645,7 @@
     <div class="privacy">
       <div><h3>Token in the Keychain</h3><p>Your token is stored in the macOS Keychain, and it's only ever sent to GitHub.</p></div>
       <div><h3>Sandboxed</h3><p>PRzzz runs in the App Sandbox, so it can't read your files.</p></div>
-      <div><h3>Easy sign-in</h3><p>One click signs in with the GitHub CLI you already use: Terminal hands over its token, and PRzzz clears it from your clipboard afterwards. A personal access token works too.</p></div>
+      <div><h3>Easy sign-in</h3><p>Sign in on the GitHub website with a one-time code, or in one click with the GitHub CLI you already use (PRzzz clears its token from your clipboard afterwards). A personal access token works too.</p></div>
       <div><h3>Light on your rate limit</h3><p>Built-in rate limit stats show every call PRzzz makes, and how many GraphQL points each one costs.</p></div>
     </div>
     <!-- TODO: link the privacy policy once it exists, and mention the anonymous analytics and crash reports. -->
