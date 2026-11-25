@@ -18,7 +18,7 @@
     --accent: #0066cc;
     --btn: #0066cc;
     --ink: #000; --ink-amt: 45%;
-    --commit: #c99a2e; --comment: #8250df; --pro: #ff9500;
+    --commit: #c99a2e; --comment: #8250df; --edit: #0b848f; --pro: #ff9500;
     --accent-text: #ffffff;
     --desk-1: #c9d6ff;
     --desk-2: #e2e2f6;
@@ -45,7 +45,7 @@
       --accent: #0a84ff;
       --btn: #0a6cd6;
       --ink: #fff; --ink-amt: 15%;
-      --commit: #d4a83a; --comment: #8957e5; --pro: #ff9f0a;
+      --commit: #d4a83a; --comment: #8957e5; --edit: #169aa6; --pro: #ff9f0a;
       --desk-1: #23264a;
       --desk-2: #3a2440;
       --menubar: rgba(30, 30, 34, 0.55);
@@ -62,7 +62,7 @@
   :root[data-theme="dark"] {
     --bg: #111113; --surface: #1e1e21; --surface-2: #28282c; --text: #f5f5f7;
     --text-2: #a1a1a8; --text-3: #98989f; --btn: #0a6cd6; --ink: #fff; --ink-amt: 15%; --line: rgba(255, 255, 255, 0.09);
-    --commit: #d4a83a; --comment: #8957e5; --pro: #ff9f0a;
+    --commit: #d4a83a; --comment: #8957e5; --edit: #169aa6; --pro: #ff9f0a;
     --accent: #0a84ff; --desk-1: #23264a; --desk-2: #3a2440; --menubar: rgba(30, 30, 34, 0.55);
     --shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.14);
     --blue: #0a84ff; --red: #ff453a; --orange: #ff9f0a; --green: #32d74b; --teal: #40c8e0;
@@ -146,7 +146,7 @@
   .m-head .login { color: var(--text-3); }
   .m-head .tools { margin-left: auto; display: flex; gap: 12px; color: var(--text-2); }
   .m-head .tools .ico { font-size: 14px; }
-  .m-body { max-height: 700px; overflow: hidden; position: relative; }
+  .m-body { max-height: 860px; overflow: hidden; position: relative; }
   .m-body::after { content: ""; position: absolute; inset: auto 0 0; height: 48px;
                    background: linear-gradient(transparent, var(--surface)); pointer-events: none; }
   /* Section headers, as in the app: a 12% wash of the section's colour, its 4 pt
@@ -156,6 +156,15 @@
          border-bottom: 0.5px solid color-mix(in srgb, var(--t) 35%, transparent); }
   .sec::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--t); }
   .sec .ico { font-size: 13px; }
+  .sec .chev { font-size: 12px; color: var(--text-3); transform: rotate(90deg); margin-right: -2px; }
+  .sec.collapsed .chev { transform: none; }
+  .stack { display: inline-flex; flex-direction: row-reverse; margin-left: 2px; }
+  .stack .av { width: 15px; height: 15px; font-size: 7.5px; box-shadow: 0 0 0 1.5px var(--surface); }
+  .stack .av + .av { margin-right: -5px; }
+  .stack .av { position: relative; } .stack .av:nth-child(1) { z-index: 3; } .stack .av:nth-child(2) { z-index: 2; }
+  .labels { display: flex; gap: 4px; overflow: hidden; }
+  .lbl { flex: none; font-size: 10px; font-weight: 500; line-height: 1.35; padding: 0 6px; border-radius: 999px; color: #fff; background: var(--lc); }
+  .lbl.dk { color: rgba(0, 0, 0, 0.85); }
   .pill { margin-left: auto; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px;
           background: color-mix(in srgb, var(--t) 18%, transparent); color: var(--t); }
   /* A PR row, laid out like the app's: avatar, then title, repo line, status with the
@@ -163,14 +172,19 @@
   .row { display: grid; grid-template-columns: 22px minmax(0, 1fr) 14px; gap: 10px; align-items: start;
          padding: 7px 12px 7px 14px; position: relative; border-bottom: 1px solid var(--line); }
   .row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--t); }
-  .ribbon { position: absolute; left: 0; top: 32px; width: 19px; height: 14px; z-index: 1; display: grid; place-items: center;
+  .ribbon { position: absolute; left: 0; top: 32px; width: 20px; height: 16px; z-index: 1; display: grid; place-items: center;
             color: #fff; background: var(--rc); border-radius: 0 4px 4px 0; }
-  .ribbon::after { content: ""; position: absolute; left: 0; top: 14px; border-top: 3px solid color-mix(in srgb, var(--rc) 60%, #000);
+  .ribbon::after { content: ""; position: absolute; left: 0; top: 16px; border-top: 3px solid color-mix(in srgb, var(--rc) 60%, #000);
                    border-left: 4px solid transparent; }
-  .ribbon .ico { font-size: 9px; }
+  .ribbon .ico { font-size: 10px; }
   .ribbon.commit { --rc: var(--commit); }
   .ribbon.comment { --rc: var(--comment); }
-  .ribbon + .ribbon { top: 44px; }
+  .ribbon.edit { --rc: var(--edit); }
+  .ribbon + .ribbon { top: 49px; }
+  .ribbon + .ribbon + .ribbon { top: 66px; }
+  .row .main.rib2 { min-height: 54px; }
+  .row .main.rib3 { min-height: 71px; }
+  .row .main .line { margin-top: auto; }
   .av { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 10.5px; font-weight: 700;
         color: #fff; background: var(--c); }
   .row .main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
@@ -197,6 +211,7 @@
            animation: grow 6s ease-in-out infinite alternate; }
   @keyframes grow { from { width: 38% } to { width: 62% } }
   @media (prefers-reduced-motion: reduce) { .bar i { animation: none; } }
+  .bar.done i { width: 100%; animation: none; }
   .m-foot { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-top: 1px solid var(--line); color: var(--text-3); font-size: 12px; }
   .m-foot .ico { font-size: 12px; color: var(--text-2); }
   .m-foot .quit { margin-left: auto; color: var(--text-2); }
@@ -387,36 +402,39 @@
         <div class="menu">
           <div class="m-head">
             <b>PRzzz</b><span class="login">@octo-dev</span>
-            <span class="tools"><i class="ico" style="--src:url(assets/icons/settings.svg)"></i></span>
+            <span class="tools"><i class="ico" style="--src:url(assets/icons/search.svg)"></i><i class="ico" style="--src:url(assets/icons/settings.svg)"></i></span>
           </div>
           <div class="m-body">
-            <div class="sec" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs your review<span class="pill">2</span></div>
+            <div class="sec" style="--t:var(--blue)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs your review<span class="stack"><span class="av" style="--c:#c4472f">A</span><span class="av" style="--c:#3a70c2">B</span></span><span class="pill">2</span></div>
             <div class="row" style="--t:var(--blue)">
-              <span class="av" style="--c:#c4472f">A</span><span class="ribbon comment" title="Contains your comment"><i class="ico" style="--src:url(assets/icons/messages-question.svg)"></i></span>
-              <div class="main">
+              <span class="av" style="--c:#c4472f">A</span><span class="ribbon comment" title="Contains your comment"><i class="ico" style="--src:url(assets/icons/messages-question.svg)"></i></span><span class="ribbon edit" title="You edited its description"><i class="ico" style="--src:url(assets/icons/pencil-regular.svg)"></i></span>
+              <div class="main rib2">
                 <div class="title">Add dark mode to the settings page</div>
                 <div class="meta">acme/web-app #482 · alice · 20m</div>
+                <div class="labels"><span class="lbl dk" style="--lc:#a2eeef">enhancement</span><span class="lbl" style="--lc:#7057ff">ui</span></div>
                 <div class="line"><span class="status" style="--s:var(--blue)"><i class="ico" style="--src:url(assets/icons/eye.svg)"></i>Review required</span></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
             <div class="row" style="--t:var(--blue)">
               <span class="av" style="--c:#3a70c2">B</span><span class="ribbon commit" title="Contains your commit"><i class="ico" style="--src:url(assets/icons/hastag.svg)"></i></span><span class="ribbon comment" title="Contains your comment"><i class="ico" style="--src:url(assets/icons/messages-question.svg)"></i></span>
-              <div class="main">
+              <div class="main rib2">
                 <div class="title">Migrate payments to the new API client</div>
                 <div class="meta">acme/web-api #1207 · bob · 1h</div>
+                <div class="labels"><span class="lbl" style="--lc:#0e8a16">backend</span></div>
                 <div class="line"><span class="status" style="--s:var(--orange)"><i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Checks running</span></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
 
-            <div class="sec" style="--t:var(--red)"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i>Needs action<span class="pill">2</span></div>
+            <div class="sec" style="--t:var(--red)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i>Needs action<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">2</span></div>
             <div class="row" style="--t:var(--red)">
               <span class="av" style="--c:#7a4fe0">O</span>
               <div class="main">
                 <div class="title">Update the onboarding copy</div>
                 <div class="meta">acme/docs #52 · octo-dev · 2h</div>
-                <div class="line"><span class="status" style="--s:var(--red)"><i class="ico" style="--src:url(assets/icons/cross-circle.svg)"></i>Checks failing</span><span class="sb" title="Checks: 1 failing, 6 successful"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--danger)"></i><span class="seg"><i style="--n:6; --k:var(--success)"></i><i style="--n:1; --k:var(--danger)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: no reviewers yet, 1 required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"></span></span></div>
+                <div class="labels"><span class="lbl" style="--lc:#0075ca">documentation</span></div>
+                <div class="line"><span class="status" style="--s:var(--red)"><i class="ico" style="--src:url(assets/icons/cross-circle.svg)"></i>Checks failing</span><span class="sb" title="Checks: 1 failing, 6 successful"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--danger)"></i><span class="seg"><i style="--n:6; --k:var(--success)"></i><i style="--n:1; --k:var(--danger)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: no reviewers yet, 1 required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
@@ -430,29 +448,30 @@
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
 
-            <div class="sec" style="--t:var(--gray)"><i class="ico" style="--src:url(assets/icons/code-pull-request-draft.svg)"></i>Your drafts<span class="pill">1</span></div>
+            <div class="sec" style="--t:var(--gray)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/code-pull-request-draft.svg)"></i>Your drafts<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">1</span></div>
             <div class="row" style="--t:var(--gray)">
               <span class="av" style="--c:#7a4fe0">O</span>
               <div class="main">
                 <div class="title">WIP: offline sync for the iOS app</div>
                 <div class="meta">acme/ios-app #233 · octo-dev · 45m</div>
-                <div class="line"><span class="status" style="--s:var(--text-3)"><i class="ico" style="--src:url(assets/icons/pencil.svg)"></i>Draft</span><span class="sb" title="Checks: no checks"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i><span class="seg"></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: no reviewers yet, 1 required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"></span></span></div>
+                <div class="line"><span class="status" style="--s:var(--text-3)"><i class="ico" style="--src:url(assets/icons/pencil.svg)"></i>Draft</span><span class="sb" title="Checks: no checks"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i><span class="seg"></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: no reviewers yet, 1 required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
 
-            <div class="sec" style="--t:var(--green)"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i>Ready to merge<span class="pill">1</span></div>
+            <div class="sec" style="--t:var(--green)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i>Ready to merge<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">1</span></div>
             <div class="row" style="--t:var(--green)">
               <span class="av" style="--c:#7a4fe0">O</span>
               <div class="main">
                 <div class="title">Add a rate limit dashboard</div>
                 <div class="meta">acme/web-admin #71 · octo-dev · 6h</div>
                 <div class="line"><span class="status" style="--s:var(--green)"><i class="ico" style="--src:url(assets/icons/check-circle.svg)"></i>Ready to merge</span><span class="sb" title="Checks: all 12 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:12; --k:var(--success)"></i></span></span><span class="sb" title="Comments: all 2 resolved"><i class="ico" style="--src:url(assets/icons/comment.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:2; --k:var(--success)"></i></span></span><span class="sb" title="Approvals: approved, 2 of 2"><i class="ico" style="--src:url(assets/icons/badge-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:2; --k:var(--success)"></i></span></span></div>
+                <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar done"><i></i></div></div><div class="label"><span>Passed · took 6m 48s</span><span>12/12 checks</span></div></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
 
-            <div class="sec" style="--t:var(--yellow)"><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i>Waiting for review or checks<span class="pill">2</span></div>
+            <div class="sec" style="--t:var(--yellow)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i>Waiting for review or checks<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">2</span></div>
             <div class="row" id="ci-row" style="--t:var(--yellow)">
               <span class="av" style="--c:#7a4fe0">O</span>
               <div class="main">
@@ -472,6 +491,7 @@
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
+            <div class="sec collapsed" style="--t:var(--teal)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/world.svg)"></i>Other PRs in your repositories<span class="stack"><span class="av" style="--c:#23804f">C</span><span class="av" style="--c:#b0567a">D</span><span class="av" style="--c:#5a6b7d">E</span></span><span class="pill">4</span></div>
           </div>
           <div class="m-foot">
             <i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Updated 10:42 (just now)
@@ -486,7 +506,7 @@
 <section id="buckets">
   <div class="wrap">
     <h2>Sorted the way you work.</h2>
-    <p class="sub">PRzzz groups your pull requests the way GitHub's inbox does: what needs you comes first, then what's waiting on someone else, then what's done. Each section has its own colour, so you can tell them apart at a glance. Empty sections stay hidden, and with Pro you can put the rest in any order.</p>
+    <p class="sub">PRzzz groups your pull requests the way GitHub's inbox does: what needs you comes first, then what's waiting on someone else, then what's done. Each section has its own colour and shows who has PRs in it, so you can tell them apart at a glance. Empty sections stay hidden, and with Pro you can put the rest in any order.</p>
     <div class="buckets">
       <div class="bucket" style="--t:var(--blue)"><span class="chip"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i></span><div><b>Needs your review</b><span>Someone asked you to take a look.</span></div></div>
       <div class="bucket" style="--t:var(--red)"><span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span><div><b>Needs action</b><span>Your PRs with conflicts, failing checks or requested changes.</span></div></div>
@@ -497,9 +517,10 @@
       <div class="bucket" style="--t:var(--yellow)"><span class="chip"><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i></span><div><b>Waiting for review or checks</b><span>Your PRs that are on someone else's clock.</span></div></div>
       <div class="bucket" style="--t:var(--indigo)"><span class="chip"><i class="ico" style="--src:url(assets/icons/users-alt.svg)"></i></span><div><b>Needs your team's review</b><span>Requests sent to a team you're on.</span></div></div>
       <div class="bucket" style="--t:var(--mint)"><span class="chip"><i class="ico" style="--src:url(assets/icons/thumbs-up.svg)"></i></span><div><b>Approved by you</b><span>Done on your side and not merged yet.</span></div></div>
+      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>The people you work with most, in a colour you pick, faces and all. Pick people, repositories or name patterns like <code>*-mobile</code>. Pro.</span></div></div>
       <div class="bucket" style="--t:var(--purple)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i></span><div><b>Merged in the last 24 hours</b><span>A victory lap. Look back anywhere from an hour to a week.</span></div></div>
-      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>The people you work with most, in a colour you pick, faces and all. Pro.</span></div></div>
       <div class="bucket" style="--t:var(--pink)"><span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span><div><b>While you were away</b><span>What changed while your screen was locked. Pro.</span></div></div>
+      <div class="bucket" style="--t:var(--teal)"><span class="chip"><i class="ico" style="--src:url(assets/icons/world.svg)"></i></span><div><b>Other PRs in your repositories</b><span>Everything else open where you work. Folded away until you want it.</span></div></div>
     </div>
 
     <div class="flow">
@@ -541,6 +562,7 @@
         <span class="chip" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/stopwatch.svg)"></i></span>
         <h3>CI progress with real estimates<span class="protag">PRO</span></h3>
         <p>See how far along each build is, for example "Running · 3m of ~7m", estimated from your last ten successful runs. The bar turns orange past the estimate and red once it's well over.</p>
+        <p>When a build finishes, the bar stays: green "Passed · took 4m 12s" or red when it failed. Merged PRs keep following their build, and deployments waiting for someone's approval show in brown.</p>
         <p>Hover the bar for the build card: when it started, when it's due, and every check that isn't done yet, grouped by workflow. Each run and job links straight to its page on GitHub.</p>
         <p class="fine-print">Re-runs are timed from when GitHub restarted them, and re-running just a few jobs is estimated from those jobs' past times. Jobs stuck in the queue are called out.</p>
       </div>
@@ -568,7 +590,7 @@
       <div class="feature" style="--t:var(--orange)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i></span>
         <h3>Notifications that matter<span class="protag">PRO</span></h3>
-        <p>Hear about new review requests, a PR of yours going red or turning ready to merge, a PR you just opened, and a build starting after you push. Each PR gets one notification that updates in place, so Notification Center doesn't pile up. Click it to open the PR.</p>
+        <p>Hear about new review requests, a PR of yours going red or turning ready to merge, a PR you just opened, and a build starting after you push. Each PR gets one notification that updates in place. Click one and its PRs fly into the floating window, or open them on GitHub if you'd rather.</p>
       </div>
       <div class="feature" style="--t:var(--red)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i></span>
@@ -588,7 +610,7 @@
       <div class="feature" style="--t:var(--purple)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/hastag.svg)"></i></span>
         <h3>Spot your fingerprints</h3>
-        <p>A gold ribbon marks any PR that contains a commit of yours, and a purple one any PR you've commented on, whoever opened it. They stay in their sections, so you see your stake in other people's work at a glance.</p>
+        <p>A gold ribbon marks any PR that contains a commit of yours, a purple one any PR you've commented on, and a teal one any PR whose description you edited, whoever opened it. They stay in their sections, so you see your stake in other people's work at a glance.</p>
       </div>
       <div class="feature" style="--t:var(--green)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/filter.svg)"></i></span>
@@ -598,7 +620,17 @@
       <div class="feature" style="--t:var(--brown)">
         <span class="chip"><i class="ico" style="--src:url(assets/icons/users.svg)"></i></span>
         <h3>Custom buckets<span class="protag">PRO</span></h3>
-        <p>Make a section for the teammates whose work you follow, in a colour you pick, and see their open PRs in one place. Their profile pictures sit in the section header; hover them to see who's been busy.</p>
+        <p>Make a section for the teammates whose work you follow, the repositories you care about, or both, in a colour you pick. Fold away the busy ones: they close again after five minutes. Their profile pictures sit in the section header; hover them to see who's been busy.</p>
+      </div>
+      <div class="feature" style="--t:var(--blue)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/search.svg)"></i></span>
+        <h3>Type to filter</h3>
+        <p>Open the menu and start typing to find a PR by title, author or label. GitHub's labels show on every row in their own colours. Open a result and the filter stays for a minute, so you can open the next.</p>
+      </div>
+      <div class="feature" style="--t:var(--indigo)">
+        <span class="chip"><i class="ico" style="--src:url(assets/icons/eye.svg)"></i></span>
+        <h3>Made for VoiceOver</h3>
+        <p>Each PR reads as one short line, with its checks, reviews and build details a gesture away, since hover cards need a pointer. Sections can be reordered without dragging.</p>
       </div>
     </div>
   </div>
@@ -650,7 +682,7 @@
       <div><h3>Token in the Keychain</h3><p>Your token is stored in the macOS Keychain, and it's only ever sent to GitHub.</p></div>
       <div><h3>Sandboxed</h3><p>PRzzz runs in the App Sandbox, so it can't read your files.</p></div>
       <div><h3>Easy sign-in</h3><p>Sign in on the GitHub website with a one-time code, or in one click with the GitHub CLI you already use (PRzzz clears its token from your clipboard afterwards). A personal access token works too.</p></div>
-      <div><h3>Light on your rate limit</h3><p>Built-in rate limit stats show every call PRzzz makes, and how many GraphQL points each one costs.</p></div>
+      <div><h3>Light on your rate limit</h3><p>PRzzz reuses PRs that haven't changed, makes a few requests at a time, and backs off when GitHub asks it to. Rate limit stats show every call and its cost.</p></div>
     </div>
     <!-- TODO: link the privacy policy once it exists, and mention the anonymous analytics and crash reports. -->
   </div>
