@@ -291,6 +291,9 @@
   .checks .wf { display: block; font-size: 12px; font-weight: 600; margin-top: 2px; }
   .checks .ck { display: flex; align-items: center; gap: 6px; padding-left: 4px; font-size: 12.5px; }
   .checks .ck .ico { font-size: 12px; flex: none; }
+  .bucket code { white-space: nowrap; }
+  /* Tiles size their text spans at 13px; the tag keeps its own size and colour. */
+  .bucket span.protag { display: inline-block; font-size: 10px; line-height: normal; margin-top: 0; color: color-mix(in srgb, var(--pro), var(--ink) var(--ink-amt)); }
   .protag { display: inline-block; vertical-align: 3px; margin-left: 6px; padding: 1px 6px; border-radius: 5px; font-size: 10px;
             font-weight: 700; letter-spacing: 0.04em; color: color-mix(in srgb, var(--pro), var(--ink) var(--ink-amt)); background: color-mix(in srgb, var(--pro) 15%, transparent); }
   .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
@@ -307,6 +310,26 @@
   .pro-perks div { border-top: 2px solid var(--line); padding-top: 16px; }
   .pro-perks h3 { margin: 0 0 6px; font-size: 16px; }
   .pro-perks p { margin: 0; color: var(--text-2); font-size: 14.5px; }
+  /* The menu mock-up's popovers, drawn like the app's: hover a ribbon, a summary bar
+     or the build bar. Ribbons open to the left, past the menu's edge; bars open below. */
+  .mpop { position: absolute; z-index: 30; width: 230px; padding: 12px; border-radius: 10px; font-size: 13px; line-height: 1.3;
+          background: var(--surface); color: var(--text); text-align: left;
+          box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.35), 0 0 0 0.5px rgba(0, 0, 0, 0.18);
+          display: flex; flex-direction: column; gap: 8px; opacity: 0; visibility: hidden; transition: opacity 0.12s, visibility 0s 0.12s; }
+  .mpop.show { opacity: 1; visibility: visible; transition: opacity 0.12s; }
+  .mpop.tip { width: auto; padding: 6px 10px; white-space: nowrap; }
+  .mpop.wide { width: 270px; }
+  .mpop::before { content: ""; position: absolute; width: 12px; height: 12px; background: inherit; transform: rotate(45deg);
+                  box-shadow: -0.5px -0.5px 0 0 rgba(0, 0, 0, 0.18); }
+  .mpop.below::before { top: -6px; left: var(--ax, 50%); margin-left: -6px; }
+  .mpop.left::before { right: -6px; top: 50%; margin-top: -6px; box-shadow: 0.5px -0.5px 0 0 rgba(0, 0, 0, 0.18); }
+  .mpop.right::before { left: -6px; top: 50%; margin-top: -6px; }
+  .mpop .hc-line .ico { font-size: 13px; }
+  .mpop .hc-foot { font-size: 11px; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mpop { background: var(--surface-2);
+    box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.6), 0 0 0 0.5px rgba(255, 255, 255, 0.16); } }
+  :root[data-theme="dark"] .mpop { background: var(--surface-2); }
+  .menu .ribbon, .menu .sb, .menu .ci .track, .fwin .sb, .fwin .ci .track { cursor: default; }
   .hc-foot { font-size: 11px; color: var(--text-2); }
 
   .privacy { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
@@ -436,7 +459,7 @@
                 <div class="meta">acme/web-api #1207 · bob · 1h</div>
                 <div class="labels"><span class="lbl" style="--lc:#0e8a16">backend</span></div>
                 <div class="line"><span class="status" style="--s:var(--orange)"><i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Checks running</span></div>
-                <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar"><i style="animation-delay: -3s"></i></div></div><div class="label"><span>Running · 5m of ~9m</span><span>6/11 checks</span></div></div>
+                <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar"><i style="animation-delay: -3s"></i></div></div><div class="label"><span>Running · 5m of ~9m</span><span>6/11 checks</span></div><template class="card"><div class="hc-head"><b>Build</b><span>Running</span></div><div class="hc-lines"><div>Started at 10:37 · 5m ago</div><div>Usually takes ~9m</div><div>Due at 10:46 · in ~4m</div><div>6 of 11 checks done</div><div>1 waiting for a runner</div></div><div class="checks"><span class="wf lk">CI</span><div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><span class="lk">test (unit)</span></div><div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><span class="lk">test (integration)</span></div><div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><span class="lk">contract tests</span></div><span class="wf lk">Deploy preview</span><div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><span class="lk">build</span></div><div class="ck"><i class="ico" style="--src:url(assets/icons/clock.svg); color:var(--neutral)" title="Waiting for a runner"></i><span class="lk">deploy</span></div></div></template></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
@@ -458,7 +481,7 @@
               <div class="main">
                 <div class="title">Cache avatars on disk</div>
                 <div class="meta">acme/web-app #486 · carol · 10h</div>
-                <div class="line"><span class="status" style="--s:var(--red)"><i class="ico" style="--src:url(assets/icons/undo.svg)"></i>Changes requested</span><span class="sb" title="Checks: all 8 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:8; --k:var(--success)"></i></span></span><span class="sb" title="Comments: 2 unresolved, 1 resolved"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"><i style="--n:1; --k:var(--success)"></i><i style="--n:2; --k:var(--neutral)"></i></span></span><span class="sb" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
+                <div class="line"><span class="status" style="--s:var(--red)"><i class="ico" style="--src:url(assets/icons/undo.svg)"></i>Changes requested</span><span class="sb" title="Checks: all 8 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:8; --k:var(--success)"></i></span></span><span class="sb" title="Comments: 2 unresolved, 1 resolved"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"><i style="--n:1; --k:var(--success)"></i><i style="--n:2; --k:var(--neutral)"></i></span></span><span class="sb" data-asked="yes" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
@@ -483,7 +506,7 @@
                 <div class="title">Add a rate limit dashboard</div>
                 <div class="meta">acme/web-admin #71 · erin · 6h</div>
                 <div class="line"><span class="status" style="--s:var(--green)"><i class="ico" style="--src:url(assets/icons/check-circle.svg)"></i>Ready to merge</span><span class="sb" title="Checks: all 12 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:12; --k:var(--success)"></i></span></span><span class="sb" title="Comments: all 2 resolved"><i class="ico" style="--src:url(assets/icons/comment.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:2; --k:var(--success)"></i></span></span><span class="sb" title="Approvals: approved, 2 of 2"><i class="ico" style="--src:url(assets/icons/badge-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:2; --k:var(--success)"></i></span></span></div>
-                <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar done"><i></i></div></div><div class="label"><span>Passed · took 6m 48s</span><span>12/12 checks</span></div></div>
+                <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar done"><i></i></div></div><div class="label"><span>Passed · took 6m 48s</span><span>12/12 checks</span></div><template class="card"><div class="hc-head"><b>Build</b><span>Passed</span></div><div class="hc-lines"><div>Finished at 10:31 · took 6m 48s</div><div>12 of 12 checks done</div></div></template></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
@@ -495,8 +518,8 @@
               <div class="main">
                 <div class="title">Speed up search indexing</div>
                 <div class="meta">acme/web-api #1211 · octo-dev · 8m</div>
-                <div class="line"><span class="status" style="--s:var(--orange)"><i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Checks running</span><span class="sb" title="Checks: 5 pending, 4 successful"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i><span class="seg"><i style="--n:4; --k:var(--success)"></i><i style="--n:5; --k:var(--attention)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
-                <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar"><i></i></div></div><div class="label"><span>Running · 3m of ~7m</span><span>4/9 checks</span></div></div>
+                <div class="line"><span class="status" style="--s:var(--orange)"><i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Checks running</span><span class="sb" title="Checks: 5 pending, 4 successful"><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i><span class="seg"><i style="--n:4; --k:var(--success)"></i><i style="--n:5; --k:var(--attention)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" data-asked="yes" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
+                <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar"><i></i></div></div><div class="label"><span>Running · 3m of ~7m</span><span>4/9 checks</span></div><template class="card"><div class="hc-head"><b>Build</b><span>Running</span></div><div class="hc-lines"><div>Started at 10:39 · 3m ago</div><div>Usually takes ~7m</div><div>Due at 10:46 · in ~4m</div><div>4 of 9 checks done</div><div>2 waiting for a runner</div></div><div class="checks"><span class="wf lk">CI</span><div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><span class="lk">test (unit)</span></div><div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><span class="lk">test (integration)</span></div><div class="ck"><i class="ico" style="--src:url(assets/icons/clock.svg); color:var(--neutral)" title="Waiting for a runner"></i><span class="lk">e2e (macos-15)</span></div><span class="wf lk">Deploy preview</span><div class="ck"><i class="ico" style="--src:url(assets/icons/stopwatch.svg); color:var(--attention)" title="Running"></i><span class="lk">build</span></div><div class="ck"><i class="ico" style="--src:url(assets/icons/clock.svg); color:var(--neutral)" title="Waiting for a runner"></i><span class="lk">deploy</span></div></div></template></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
@@ -505,7 +528,7 @@
               <div class="main">
                 <div class="title">Document the release process</div>
                 <div class="meta">acme/docs #57 · octo-dev · 5h</div>
-                <div class="line"><span class="status" style="--s:var(--blue)"><i class="ico" style="--src:url(assets/icons/eye.svg)"></i>Review required</span><span class="sb" title="Checks: all 9 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:9; --k:var(--success)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
+                <div class="line"><span class="status" style="--s:var(--blue)"><i class="ico" style="--src:url(assets/icons/eye.svg)"></i>Review required</span><span class="sb" title="Checks: all 9 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:9; --k:var(--success)"></i></span></span><span class="sb" title="Comments: no review threads"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"></span></span><span class="sb" data-asked="yes" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
@@ -625,9 +648,9 @@
       <div class="bucket" style="--t:var(--yellow)"><span class="chip"><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i></span><div><b>Waiting for review or checks</b><span>Your PRs that are on someone else's clock.</span></div></div>
       <div class="bucket" style="--t:var(--indigo)"><span class="chip"><i class="ico" style="--src:url(assets/icons/users-alt.svg)"></i></span><div><b>Needs your team's review</b><span>Requests sent to a team you're on.</span></div></div>
       <div class="bucket" style="--t:var(--mint)"><span class="chip"><i class="ico" style="--src:url(assets/icons/thumbs-up.svg)"></i></span><div><b>Approved by you</b><span>Done on your side and not merged yet.</span></div></div>
-      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>The people you work with most, in a colour you pick, faces and all. Pick people, repositories or name patterns like <code>*-mobile</code>. Pro.</span></div></div>
+      <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets<span class="protag">PRO</span></b><span>The people you work with most, in a colour you pick, faces and all. Pick people, repositories or name patterns like <code>*-mobile</code>.</span></div></div>
       <div class="bucket" style="--t:var(--purple)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i></span><div><b>Merged in the last 24 hours</b><span>A victory lap, with the build and deployment each merge set off. Look back anywhere from an hour to a week.</span></div></div>
-      <div class="bucket" style="--t:var(--pink)"><span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span><div><b>While you were away</b><span>What changed while your screen was locked. Pro.</span></div></div>
+      <div class="bucket" style="--t:var(--pink)"><span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span><div><b>While you were away<span class="protag">PRO</span></b><span>What changed while your screen was locked.</span></div></div>
       <div class="bucket" style="--t:var(--teal)"><span class="chip"><i class="ico" style="--src:url(assets/icons/world.svg)"></i></span><div><b>Other PRs in your repositories</b><span>Everything else open where you work. Folded away until you want it.</span></div></div>
     </div>
 
@@ -817,6 +840,8 @@
   </div>
 </footer>
 
+<div class="mpop" id="mpop" aria-hidden="true"></div>
+
 <!-- A visual demo, not a real alert: hidden from screen readers, and it hides itself after a few seconds. -->
 <div class="notif" id="notif" aria-hidden="true">
   <button class="close" type="button" tabindex="-1" aria-label="Dismiss notification">×</button>
@@ -989,6 +1014,123 @@
     };
     sec.addEventListener('click', () => setOpen(sec.classList.contains('collapsed')));
   });
+
+  // Popovers in the menu mock-up, like the app's: after a short hover (0.35 s), a
+  // ribbon says what it means, a summary bar shows its breakdown, and the build bar
+  // shows the build card. A popover stays open while the pointer is on it.
+  (() => {
+    const pop = document.getElementById('mpop');
+    if (!pop) return;
+    const ICON = (name, color) => `<i class="ico" style="--src:url(assets/icons/${name}.svg); color:var(${color})"></i>`;
+    const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+    // Segment counts by colour, from the bar itself.
+    const counts = (sb) => {
+      const c = {};
+      sb.querySelectorAll('.seg i').forEach((i) => {
+        const k = (i.style.getPropertyValue('--k').match(/--[a-z]+/) || [''])[0];
+        c[k] = (c[k] || 0) + Number(i.style.getPropertyValue('--n'));
+      });
+      return c;
+    };
+    const segBar = (parts) => '<span class="seg exact">' + parts.filter(([n]) => n > 0)
+      .map(([n, k]) => `<i style="--n:${n}; --k:var(${k})"></i>`).join('') + '</span>';
+    const line = (icon, color, text) => `<div class="hc-line">${ICON(icon, color)}${text}</div>`;
+    const head = (title, sub) => `<div class="hc-head"><b>${title}</b><span>${sub}</span></div>`;
+
+    function summary(sb) {
+      const kind = sb.querySelector('.ico').style.getPropertyValue('--src');
+      const c = counts(sb);
+      if (kind.includes('shield-check')) {
+        const ok = c['--success'] || 0, skip = c['--neutral'] || 0, wait = c['--attention'] || 0, bad = c['--danger'] || 0;
+        const urgent = [bad && `${bad} failing`, wait && `${wait} pending`].filter(Boolean).join(', ');
+        return head('Checks', urgent || (ok ? 'All passed' : skip ? 'All skipped' : 'No checks'))
+          + segBar([[ok, '--success'], [skip, '--neutral'], [wait, '--attention'], [bad, '--danger']])
+          + (bad ? line('cross-circle', '--danger', plural(bad, 'failing check', 'failing checks')) : '')
+          + (wait ? line('clock', '--attention', plural(wait, 'pending check', 'pending checks')) : '')
+          + (ok ? line('check-circle', '--success', plural(ok, 'successful check', 'successful checks')) : '');
+      }
+      if (kind.includes('comment')) {
+        const done = c['--success'] || 0, open = c['--neutral'] || 0;
+        return head('Comments', open ? `${open} unresolved` : done ? 'All resolved' : 'No review threads')
+          + segBar([[done, '--success'], [open, '--neutral']])
+          + (open ? line('comment', '--neutral', plural(open, 'unresolved thread', 'unresolved threads')) : '')
+          + (done ? line('check-circle', '--success', plural(done, 'resolved thread', 'resolved threads')) : '')
+          + `<div class="hc-foot">${plural(Number(sb.dataset.comments || (done + open) * 2), 'comment in all', 'comments in all')}</div>`;
+      }
+      const yes = c['--success'] || 0, still = c['--attention'] || 0;
+      const asked = yes > 0 || sb.dataset.asked === 'yes';
+      return head('Approvals', still === 0 ? 'Approved' : asked ? `${still} still required` : `No reviewers yet, ${still} required`)
+        + segBar([[yes, '--success'], [still, '--attention']])
+        + (still ? line('clock', '--attention', `${still} still required`) : '')
+        + (yes ? line('badge-check', '--success', plural(yes, 'approval', 'approvals')) : '')
+        + `<div class="hc-foot">${yes + still} required by the branch rules</div>`;
+    }
+
+    let target = null, openTimer = null, closeTimer = null;
+    function place(el) {
+      const r = el.getBoundingClientRect();
+      const p = pop.getBoundingClientRect();
+      const sx = window.scrollX, sy = window.scrollY;
+      pop.classList.remove('below', 'left', 'right');
+      if (el.classList.contains('ribbon')) {
+        // Out to the left, past the menu's edge, so it covers none of the row.
+        let side = 'left', x = r.left - p.width - 10;
+        if (x < 8) { side = 'right'; x = r.right + 10; }
+        pop.classList.add(side);
+        pop.style.left = (x + sx) + 'px';
+        pop.style.top = (r.top + r.height / 2 - p.height / 2 + sy) + 'px';
+      } else {
+        const cx = r.left + r.width / 2;
+        const x = Math.min(Math.max(8, cx - p.width / 2), document.documentElement.clientWidth - p.width - 8);
+        pop.classList.add('below');
+        pop.style.setProperty('--ax', (cx - x) + 'px');
+        pop.style.left = (x + sx) + 'px';
+        pop.style.top = (r.bottom + 9 + sy) + 'px';
+      }
+    }
+    function open(el) {
+      target = el;
+      pop.className = 'mpop';
+      if (el.classList.contains('ribbon')) {
+        pop.classList.add('tip');
+        pop.textContent = el.dataset.tip;
+      } else if (el.classList.contains('track')) {
+        pop.classList.add('wide');
+        const tpl = el.parentElement.querySelector('template.card');
+        pop.innerHTML = tpl ? tpl.innerHTML : '';
+      } else {
+        pop.innerHTML = summary(el);
+      }
+      place(el);
+      pop.classList.add('show');
+    }
+    function close() { pop.classList.remove('show'); target = null; }
+    const SOURCES = '.menu .ribbon, .menu .sb, .menu .ci .track, .fwin .sb, .fwin .ci .track';
+    // The native tooltips would show alongside: keep their text for the popover instead.
+    const untitle = (root) => root.querySelectorAll('.ribbon[title], .sb[title]').forEach((el) => {
+      if (el.classList.contains('ribbon')) el.dataset.tip = el.title;
+      el.removeAttribute('title');
+    });
+    untitle(document);
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest('#mpop')) { clearTimeout(closeTimer); return; }
+      const el = e.target.closest(SOURCES);
+      if (!el) return;
+      if (el.closest('.fwin')) untitle(el.closest('.fwin'));
+      clearTimeout(closeTimer);
+      if (el === target) return;
+      clearTimeout(openTimer);
+      openTimer = setTimeout(() => open(el), target ? 0 : 350);
+    });
+    document.addEventListener('mouseout', (e) => {
+      const from = e.target.closest(SOURCES + ', #mpop');
+      if (!from || (e.relatedTarget && from.contains(e.relatedTarget))) return;
+      clearTimeout(openTimer);
+      // A moment to cross the gap from the bar onto the card.
+      closeTimer = setTimeout(close, 150);
+    });
+    window.addEventListener('scroll', () => { if (target) close(); }, { passive: true });
+  })();
 </script>
 
 </body>
