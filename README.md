@@ -1,6 +1,6 @@
 # PRzzz website
 
-The landing page for [PRzzz](https://przzz-app.github.io), a Mac menu bar app for GitHub pull requests.
+The landing page for [PRzzz](https://przzz.appzzz.site), a Mac menu bar app for GitHub pull requests.
 
 A single static `index.html` with no build step. Icons are the app's own UIcons by Flaticon, in `assets/icons`.
 
