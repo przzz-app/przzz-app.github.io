@@ -146,9 +146,7 @@
   .m-head .login { color: var(--text-3); }
   .m-head .tools { margin-left: auto; display: flex; gap: 12px; color: var(--text-2); }
   .m-head .tools .ico { font-size: 14px; }
-  .m-body { max-height: 900px; overflow: hidden; position: relative; }
-  .m-body::after { content: ""; position: absolute; inset: auto 0 0; height: 48px;
-                   background: linear-gradient(transparent, var(--surface)); pointer-events: none; }
+  .m-body { overflow: hidden; position: relative; }
   /* Section headers, as in the app: a 12% wash of the section's colour, its 4 pt
      stripe down the left edge, and a hairline of the colour at 35% underneath. */
   .sec { position: relative; display: flex; align-items: center; gap: 7px; padding: 7px 12px 7px 14px; font-weight: 600; color: var(--t);
@@ -158,10 +156,24 @@
   .sec .ico { font-size: 13px; }
   .sec .chev { font-size: 12px; color: var(--text-3); transform: rotate(90deg); margin-right: -2px; }
   .sec.collapsed .chev { transform: none; }
+  .sec .chev { transition: transform 0.2s ease; }
+  .sec.toggle { cursor: pointer; user-select: none; }
+  .sec .timer { display: none; margin-left: auto; align-items: center; gap: 3px; font-size: 11px; font-weight: 500;
+                color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .sec .timer .ico { font-size: 11px; color: inherit; }
+  .sec:not(.collapsed) .timer { display: inline-flex; }
+  .sec:not(.collapsed) .timer + .pill { margin-left: 8px; }
+  .fold { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.25s ease; }
+  .fold.open { grid-template-rows: 1fr; }
+  .fold > div { overflow: hidden; min-height: 0; }
+  @media (prefers-reduced-motion: reduce) { .fold, .sec .chev { transition: none; } }
   .stack { display: inline-flex; flex-direction: row-reverse; margin-left: 2px; }
   .stack .av { width: 15px; height: 15px; font-size: 7.5px; box-shadow: 0 0 0 1.5px var(--surface); }
   .stack .av + .av { margin-right: -5px; }
-  .stack .av { position: relative; } .stack .av:nth-child(1) { z-index: 3; } .stack .av:nth-child(2) { z-index: 2; }
+  /* The first in the markup is the most recent: drawn at the right, on top, each one over the next. */
+  .stack .av { position: relative; }
+  .stack .av:nth-child(1) { z-index: 5; } .stack .av:nth-child(2) { z-index: 4; } .stack .av:nth-child(3) { z-index: 3; }
+  .stack .av:nth-child(4) { z-index: 2; } .stack .av:nth-child(5) { z-index: 1; }
   .labels { display: flex; gap: 4px; overflow: hidden; }
   .lbl { flex: none; font-size: 10px; font-weight: 500; line-height: 1.35; padding: 0 6px; border-radius: 999px; color: #fff; background: var(--lc); }
   .lbl.dk { color: rgba(0, 0, 0, 0.85); }
@@ -392,7 +404,7 @@
       <a class="btn ghost" href="#buckets">See how it works</a>
     </div>
 
-    <div class="desk" role="img" aria-label="The PRzzz menu, open from the menu bar, with pull requests sorted into sections: Needs your review, Needs action, Your drafts, Ready to merge, and Waiting for review or checks.">
+    <div class="desk" role="img" aria-label="The PRzzz menu, open from the menu bar, with pull requests sorted into sections: Needs your review, Needs action, Your drafts, Ready to merge, Waiting for review or checks, and a custom section, My awesome team.">
       <div class="menubar">
         <span class="faint">Wi‑Fi</span>
         <span class="item on" title="2 review requests, 2 of your PRs need action, 1 draft"><i class="ico" style="--src:url(assets/pull-request.svg)"></i>5</span>
@@ -405,7 +417,8 @@
             <span class="tools"><i class="ico" style="--src:url(assets/icons/search.svg)"></i><i class="ico" style="--src:url(assets/icons/settings.svg)"></i></span>
           </div>
           <div class="m-body">
-            <div class="sec" style="--t:var(--blue)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs your review<span class="stack"><span class="av" style="--c:#c4472f">A</span><span class="av" style="--c:#3a70c2">B</span></span><span class="pill">2</span></div>
+            <div class="sec toggle" style="--t:var(--blue)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs your review<span class="stack"><span class="av" style="--c:#c4472f">A</span><span class="av" style="--c:#3a70c2">B</span></span><span class="pill">2</span></div>
+            <div class="fold open"><div>
             <div class="row" style="--t:var(--blue)">
               <span class="av" style="--c:#c4472f">A</span><span class="ribbon comment" title="Contains your comment"><i class="ico" style="--src:url(assets/icons/messages-question.svg)"></i></span><span class="ribbon edit" title="You edited its description"><i class="ico" style="--src:url(assets/icons/pencil-regular.svg)"></i></span>
               <div class="main rib2">
@@ -427,8 +440,9 @@
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
-
-            <div class="sec" style="--t:var(--red)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i>Needs action<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">2</span></div>
+            </div></div>
+            <div class="sec toggle" style="--t:var(--red)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/shield-exclamation.svg)"></i>Needs action<span class="stack"><span class="av" style="--c:#7a4fe0">O</span><span class="av" style="--c:#23804f">C</span></span><span class="pill">2</span></div>
+            <div class="fold open"><div>
             <div class="row" style="--t:var(--red)">
               <span class="av" style="--c:#7a4fe0">O</span>
               <div class="main">
@@ -440,16 +454,17 @@
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
             <div class="row" style="--t:var(--red)">
-              <span class="av" style="--c:#7a4fe0">O</span>
+              <span class="av" style="--c:#23804f">C</span>
               <div class="main">
                 <div class="title">Cache avatars on disk</div>
-                <div class="meta">acme/web-app #486 · octo-dev · 10h</div>
+                <div class="meta">acme/web-app #486 · carol · 10h</div>
                 <div class="line"><span class="status" style="--s:var(--red)"><i class="ico" style="--src:url(assets/icons/undo.svg)"></i>Changes requested</span><span class="sb" title="Checks: all 8 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:8; --k:var(--success)"></i></span></span><span class="sb" title="Comments: 2 unresolved, 1 resolved"><i class="ico" style="--src:url(assets/icons/comment.svg)"></i><span class="seg"><i style="--n:1; --k:var(--success)"></i><i style="--n:2; --k:var(--neutral)"></i></span></span><span class="sb" title="Approvals: 1 still required"><i class="ico" style="--src:url(assets/icons/badge-check.svg)"></i><span class="seg"><i style="--n:1; --k:var(--attention)"></i></span></span></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
-
-            <div class="sec" style="--t:var(--gray)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/code-pull-request-draft.svg)"></i>Your drafts<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">1</span></div>
+            </div></div>
+            <div class="sec toggle" style="--t:var(--gray)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/code-pull-request-draft.svg)"></i>Your drafts<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">1</span></div>
+            <div class="fold open"><div>
             <div class="row" style="--t:var(--gray)">
               <span class="av" style="--c:#7a4fe0">O</span>
               <div class="main">
@@ -459,20 +474,22 @@
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
-
-            <div class="sec" style="--t:var(--green)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i>Ready to merge<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">1</span></div>
+            </div></div>
+            <div class="sec toggle" style="--t:var(--green)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/shield-check.svg)"></i>Ready to merge<span class="stack"><span class="av" style="--c:#5a6b7d">E</span></span><span class="pill">1</span></div>
+            <div class="fold open"><div>
             <div class="row" style="--t:var(--green)">
-              <span class="av" style="--c:#7a4fe0">O</span>
+              <span class="av" style="--c:#5a6b7d">E</span>
               <div class="main">
                 <div class="title">Add a rate limit dashboard</div>
-                <div class="meta">acme/web-admin #71 · octo-dev · 6h</div>
+                <div class="meta">acme/web-admin #71 · erin · 6h</div>
                 <div class="line"><span class="status" style="--s:var(--green)"><i class="ico" style="--src:url(assets/icons/check-circle.svg)"></i>Ready to merge</span><span class="sb" title="Checks: all 12 passed"><i class="ico" style="--src:url(assets/icons/shield-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:12; --k:var(--success)"></i></span></span><span class="sb" title="Comments: all 2 resolved"><i class="ico" style="--src:url(assets/icons/comment.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:2; --k:var(--success)"></i></span></span><span class="sb" title="Approvals: approved, 2 of 2"><i class="ico" style="--src:url(assets/icons/badge-check.svg); --ic:var(--success)"></i><span class="seg"><i style="--n:2; --k:var(--success)"></i></span></span></div>
                 <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar done"><i></i></div></div><div class="label"><span>Passed · took 6m 48s</span><span>12/12 checks</span></div></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
-
-            <div class="sec" style="--t:var(--yellow)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i>Waiting for review or checks<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">2</span></div>
+            </div></div>
+            <div class="sec toggle" style="--t:var(--yellow)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/hourglass-end.svg)"></i>Waiting for review or checks<span class="stack"><span class="av" style="--c:#7a4fe0">O</span></span><span class="pill">2</span></div>
+            <div class="fold open"><div>
             <div class="row" id="ci-row" style="--t:var(--yellow)">
               <span class="av" style="--c:#7a4fe0">O</span>
               <div class="main">
@@ -492,7 +509,97 @@
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
-            <div class="sec collapsed" style="--t:var(--teal)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/world.svg)"></i>Other PRs in your repositories<span class="stack"><span class="av" style="--c:#23804f">C</span><span class="av" style="--c:#b0567a">D</span><span class="av" style="--c:#5a6b7d">E</span></span><span class="pill">4</span></div>
+            </div></div>
+            <div class="sec collapsed toggle" style="--t:var(--brown)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i>My awesome team<span class="stack"><span class="av" style="--c:#23804f">C</span><span class="av" style="--c:#b0567a">D</span><span class="av" style="--c:#5a6b7d">E</span><span class="av" style="--c:#8a5a12">F</span></span><span class="timer"><i class="ico" style="--src:url(assets/icons/stopwatch.svg)"></i><span>0:10</span></span><span class="pill">5</span></div>
+            <div class="fold"><div>
+            <div class="row" style="--t:var(--brown)">
+              <span class="av" style="--c:#23804f">C</span>
+              <div class="main">
+                <div class="title">Add offline caching to the feed</div>
+                <div class="meta">acme/ios-app #241 · carol · 12m</div>
+                <div class="labels"><span class="lbl dk" style="--lc:#fbca04">ios</span></div>
+                <div class="line"><span class="status" style="--s:var(--blue)"><i class="ico" style="--src:url(assets/icons/eye.svg)"></i>Review required</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+            <div class="row" style="--t:var(--brown)">
+              <span class="av" style="--c:#b0567a">D</span>
+              <div class="main">
+                <div class="title">Retry failed webhook deliveries</div>
+                <div class="meta">acme/web-api #1215 · dave · 35m</div>
+                <div class="line"><span class="status" style="--s:var(--orange)"><i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Checks running</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+            <div class="row" style="--t:var(--brown)">
+              <span class="av" style="--c:#5a6b7d">E</span>
+              <div class="main">
+                <div class="title">Fix the date picker in Safari</div>
+                <div class="meta">acme/web-app #490 · erin · 2h</div>
+                <div class="labels"><span class="lbl" style="--lc:#d73a4a">bug</span></div>
+                <div class="line"><span class="status" style="--s:var(--red)"><i class="ico" style="--src:url(assets/icons/undo.svg)"></i>Changes requested</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+            <div class="row" style="--t:var(--brown)">
+              <span class="av" style="--c:#8a5a12">F</span>
+              <div class="main">
+                <div class="title">Upgrade to Swift 6</div>
+                <div class="meta">acme/ios-app #238 · frank · 3h</div>
+                <div class="line"><span class="status" style="--s:var(--green)"><i class="ico" style="--src:url(assets/icons/check-circle.svg)"></i>Ready to merge</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+            <div class="row" style="--t:var(--brown)">
+              <span class="av" style="--c:#5a6b7d">E</span>
+              <div class="main">
+                <div class="title">New onboarding flow</div>
+                <div class="meta">acme/web-app #493 · erin · 1d</div>
+                <div class="line"><span class="status" style="--s:var(--text-3)"><i class="ico" style="--src:url(assets/icons/pencil.svg)"></i>Draft</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+            </div></div>
+            <div class="sec collapsed toggle" style="--t:var(--teal)"><i class="ico chev" style="--src:url(assets/icons/angle-small-right.svg)"></i><i class="ico" style="--src:url(assets/icons/world.svg)"></i>Other PRs in your repositories<span class="stack"><span class="av" style="--c:#2f6f9f">G</span><span class="av" style="--c:#8a4f9e">H</span><span class="av" style="--c:#4f7a28">I</span><span class="av" style="--c:#23804f">C</span></span><span class="timer"><i class="ico" style="--src:url(assets/icons/stopwatch.svg)"></i><span>0:10</span></span><span class="pill">4</span></div>
+            <div class="fold"><div>
+            <div class="row" style="--t:var(--teal)">
+              <span class="av" style="--c:#2f6f9f">G</span>
+              <div class="main">
+                <div class="title">Bump eslint to 9.12</div>
+                <div class="meta">acme/web-app #495 · grace · 25m</div>
+                <div class="labels"><span class="lbl" style="--lc:#0366d6">dependencies</span></div>
+                <div class="line"><span class="status" style="--s:var(--green)"><i class="ico" style="--src:url(assets/icons/check-circle.svg)"></i>Ready to merge</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+            <div class="row" style="--t:var(--teal)">
+              <span class="av" style="--c:#8a4f9e">H</span>
+              <div class="main">
+                <div class="title">Add a health check endpoint</div>
+                <div class="meta">acme/web-api #1218 · henry · 1h</div>
+                <div class="line"><span class="status" style="--s:var(--blue)"><i class="ico" style="--src:url(assets/icons/eye.svg)"></i>Review required</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+            <div class="row" style="--t:var(--teal)">
+              <span class="av" style="--c:#4f7a28">I</span>
+              <div class="main">
+                <div class="title">Speed up the iOS release build</div>
+                <div class="meta">acme/ios-app #244 · ivy · 4h</div>
+                <div class="line"><span class="status" style="--s:var(--red)"><i class="ico" style="--src:url(assets/icons/cross-circle.svg)"></i>Checks failing</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+            <div class="row" style="--t:var(--teal)">
+              <span class="av" style="--c:#23804f">C</span>
+              <div class="main">
+                <div class="title">Try a new chart library</div>
+                <div class="meta">acme/web-admin #74 · carol · 2d</div>
+                <div class="line"><span class="status" style="--s:var(--text-3)"><i class="ico" style="--src:url(assets/icons/pencil.svg)"></i>Draft</span></div>
+              </div>
+              <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
+            </div>
+            </div></div>
           </div>
           <div class="m-foot">
             <i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Updated 10:42 (just now)
@@ -858,6 +965,30 @@
       card.classList.add('flash');
     });
   })();
+
+  // Every section's header opens and closes it, as in the app. "My awesome team" and
+  // "Other PRs in your repositories" are Collapse by default sections: they start
+  // closed, and once opened they close again after a while, counting down in the header.
+  // The app waits 5 minutes; the page waits 10 seconds, so a visitor sees it close.
+  const OPEN_FOR = 10;
+  document.querySelectorAll('.sec.toggle').forEach((sec) => {
+    const fold = sec.nextElementSibling;
+    const clock = sec.querySelector('.timer span');
+    if (!fold || !fold.classList.contains('fold')) return;
+    let timer = null, closesAt = 0;
+    const tick = () => {
+      const left = Math.max(0, Math.round((closesAt - Date.now()) / 1000));
+      clock.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+      if (left === 0) setOpen(false);
+    };
+    const setOpen = (open) => {
+      sec.classList.toggle('collapsed', !open);
+      fold.classList.toggle('open', open);
+      clearInterval(timer);
+      if (open && clock) { closesAt = Date.now() + OPEN_FOR * 1000; tick(); timer = setInterval(tick, 1000); }
+    };
+    sec.addEventListener('click', () => setOpen(sec.classList.contains('collapsed')));
+  });
 </script>
 
 </body>
