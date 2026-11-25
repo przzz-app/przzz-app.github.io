@@ -146,7 +146,7 @@
   .m-head .login { color: var(--text-3); }
   .m-head .tools { margin-left: auto; display: flex; gap: 12px; color: var(--text-2); }
   .m-head .tools .ico { font-size: 14px; }
-  .m-body { max-height: 860px; overflow: hidden; position: relative; }
+  .m-body { max-height: 900px; overflow: hidden; position: relative; }
   .m-body::after { content: ""; position: absolute; inset: auto 0 0; height: 48px;
                    background: linear-gradient(transparent, var(--surface)); pointer-events: none; }
   /* Section headers, as in the app: a 12% wash of the section's colour, its 4 pt
@@ -423,6 +423,7 @@
                 <div class="meta">acme/web-api #1207 · bob · 1h</div>
                 <div class="labels"><span class="lbl" style="--lc:#0e8a16">backend</span></div>
                 <div class="line"><span class="status" style="--s:var(--orange)"><i class="ico" style="--src:url(assets/icons/clock.svg)"></i>Checks running</span></div>
+                <div class="ci"><div class="track"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i><div class="bar"><i style="animation-delay: -3s"></i></div></div><div class="label"><span>Running · 5m of ~9m</span><span>6/11 checks</span></div></div>
               </div>
               <i class="ico pop" style="--src:url(assets/icons/browsers.svg)"></i>
             </div>
@@ -528,7 +529,8 @@
       <span class="tag" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/inbox-in.svg)"></i>Needs review</span>→
       <span class="tag" style="--t:var(--mint)"><i class="ico" style="--src:url(assets/icons/thumbs-up.svg)"></i>Approved</span>→
       <span class="tag" style="--t:var(--orange)"><i class="ico" style="--src:url(assets/icons/rotate-left.svg)"></i>Dismissed</span>→
-      <span class="tag" style="--t:var(--purple)"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i>Merged</span>
+      <span class="tag" style="--t:var(--purple)"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i>Merged</span>→
+      <span class="tag" style="--t:var(--green)"><i class="ico" style="--src:url(assets/icons/play-circle.svg)"></i>Deployed</span>
     </div>
   </div>
 </section>
