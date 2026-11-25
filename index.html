@@ -519,7 +519,7 @@
       <div class="bucket" style="--t:var(--indigo)"><span class="chip"><i class="ico" style="--src:url(assets/icons/users-alt.svg)"></i></span><div><b>Needs your team's review</b><span>Requests sent to a team you're on.</span></div></div>
       <div class="bucket" style="--t:var(--mint)"><span class="chip"><i class="ico" style="--src:url(assets/icons/thumbs-up.svg)"></i></span><div><b>Approved by you</b><span>Done on your side and not merged yet.</span></div></div>
       <div class="bucket" style="--t:var(--brown)"><span class="chip"><i class="ico" style="--src:url(assets/icons/filter-list.svg)"></i></span><div><b>Custom buckets</b><span>The people you work with most, in a colour you pick, faces and all. Pick people, repositories or name patterns like <code>*-mobile</code>. Pro.</span></div></div>
-      <div class="bucket" style="--t:var(--purple)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i></span><div><b>Merged in the last 24 hours</b><span>A victory lap. Look back anywhere from an hour to a week.</span></div></div>
+      <div class="bucket" style="--t:var(--purple)"><span class="chip"><i class="ico" style="--src:url(assets/icons/code-merge.svg)"></i></span><div><b>Merged in the last 24 hours</b><span>A victory lap, with the build and deployment each merge set off. Look back anywhere from an hour to a week.</span></div></div>
       <div class="bucket" style="--t:var(--pink)"><span class="chip"><i class="ico" style="--src:url(assets/icons/sparkles.svg)"></i></span><div><b>While you were away</b><span>What changed while your screen was locked. Pro.</span></div></div>
       <div class="bucket" style="--t:var(--teal)"><span class="chip"><i class="ico" style="--src:url(assets/icons/world.svg)"></i></span><div><b>Other PRs in your repositories</b><span>Everything else open where you work. Folded away until you want it.</span></div></div>
     </div>
@@ -564,7 +564,8 @@
         <span class="chip" style="--t:var(--blue)"><i class="ico" style="--src:url(assets/icons/stopwatch.svg)"></i></span>
         <h3>CI progress with real estimates<span class="protag">PRO</span></h3>
         <p>See how far along each build is, for example "Running · 3m of ~7m", estimated from your last ten successful runs. The bar turns orange past the estimate and red once it's well over.</p>
-        <p>When a build finishes, the bar stays: green "Passed · took 4m 12s" or red when it failed. Merged PRs keep following their build, and deployments waiting for someone's approval show in brown.</p>
+        <p>When a build finishes, the bar stays: green "Passed · took 4m 12s" or red when it failed.</p>
+        <p>Merging isn't the finish line. PRzzz keeps watching the build and rolling deployment your merge sets off, so you can see it go out without opening Actions. A deployment waiting for someone's approval shows in brown.</p>
         <p>Hover the bar for the build card: when it started, when it's due, and every check that isn't done yet, grouped by workflow. Each run and job links straight to its page on GitHub.</p>
         <p class="fine-print">Re-runs are timed from when GitHub restarted them, and re-running just a few jobs is estimated from those jobs' past times. Jobs stuck in the queue are called out.</p>
       </div>
